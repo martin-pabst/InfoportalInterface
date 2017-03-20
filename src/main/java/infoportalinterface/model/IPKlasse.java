@@ -10,6 +10,8 @@ public class IPKlasse {
 
 	private IPLehrkraft klassenleitung1, klassenleitung2, klassenleitung3;
 
+	private IPKlassenteam klassenteam = new IPKlassenteam();
+
 	public IPKlasse(String id, String name, String klassenleitung1, String klassenleitung2, String klassenleitung3,
 			IPLehrkraftListe lehrkraefte) {
 		super();
@@ -81,6 +83,10 @@ public class IPKlasse {
 
 	public IPLehrkraft getKlassenleitung3() {
 		return klassenleitung3;
+	}
+
+	public IPKlassenteam getKlassenteam() {
+		return klassenteam;
 	}
 
 	public void addSchueler(IPSchueler schueler) {

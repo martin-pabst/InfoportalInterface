@@ -25,8 +25,8 @@ public enum IPFachEnum {
     Geo("Geographie", "Geo"),
     Sk("Sozialkunde", "Sk"),
 
-    K("Katholische Religionslehre", "K"),
-    Ev("Evangelische Religionslehre", "Ev"),
+    K("Kath. Religionslehre", "K"),
+    Ev("Evang. Religionslehre", "Ev"),
     Eth("Ethik", "Eth"),
 
     Ku("Kunst", "Ku"),
@@ -60,5 +60,15 @@ public enum IPFachEnum {
 
     public String getKurzform() {
         return kurzform;
+    }
+
+    public static IPFachEnum findByAnzeigeform(String anzeigeform) {
+        for(IPFachEnum ipfe: IPFachEnum.values()){
+            if(ipfe.anzeigeform.equalsIgnoreCase(anzeigeform)){
+                return ipfe;
+            }
+        }
+
+        return null;
     }
 }

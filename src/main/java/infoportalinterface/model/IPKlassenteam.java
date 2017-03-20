@@ -2,6 +2,7 @@ package infoportalinterface.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,7 +10,23 @@ import java.util.Map;
  */
 public class IPKlassenteam {
 
-    private Map<IPFachEnum, ArrayList<IPLehrkraft>> kt = new HashMap<>();
+    private Map<IPFachEnum, List<IPLehrkraft>> kt = new HashMap<>();
+
+    public void add(IPLehrkraft lehrkraft, IPFachEnum fach){
+
+        List<IPLehrkraft> lehrkraefteImFach = kt.get(fach);
+
+        if(lehrkraefteImFach == null){
+            lehrkraefteImFach = new ArrayList<>();
+            kt.put(fach, lehrkraefteImFach);
+        }
+
+        if(!lehrkraefteImFach.contains(lehrkraft)){
+            lehrkraefteImFach.add(lehrkraft);
+        }
+
+    }
+
 
 
 
