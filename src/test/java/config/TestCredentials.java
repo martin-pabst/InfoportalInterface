@@ -1,5 +1,6 @@
 package config;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 
 /**
@@ -7,7 +8,12 @@ import org.simpleframework.xml.Root;
  */
 @Root(name = "credentials")
 public class TestCredentials {
+    @Attribute
     public String username;
+
+    @Attribute
     public String password;
+
+    @Attribute
     public String baseurl;
 }
