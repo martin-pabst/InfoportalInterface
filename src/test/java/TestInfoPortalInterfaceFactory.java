@@ -8,7 +8,7 @@ public class TestInfoPortalInterfaceFactory {
 
 		if (ipi == null) {
 			ipi = new InfoPortalInterface("", "",
-					"https://portal.mzml.de/portal/csgying/schule_portal/index_dir/index.php");
+					"");
 		}
 
 		return ipi;
