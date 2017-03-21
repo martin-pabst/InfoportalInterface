@@ -106,7 +106,19 @@ public class GetKlassenteamsRequest extends BaseRequest {
                 lk = lk.trim();
 
                 if(lk.length() > 4){
+                    // Familienname und Rufname trennen
+                    String[] famNameRufname = lk.split(", ");
+                    if(famNameRufname.length == 2){
+                        String familienname = famNameRufname[0];
+                        String rufname = famNameRufname[1];
 
+                        IPLehrkraft lehrkraft = lehrkraefte.findByRufnameLeerzeichenFamilienname(rufname + " " + familienname);
+
+                        if(lehrkraft != null){
+                            klasse.getKlassenteam().add(lehrkraft, fach);
+                        }
+
+                    }
                 }
 
             }
