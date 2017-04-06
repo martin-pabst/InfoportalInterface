@@ -3,11 +3,7 @@ package infoportalinterface;
 import infoportalinterface.model.IPKlassenListe;
 import infoportalinterface.model.IPLehrkraftListe;
 import infoportalinterface.model.IPSchuelerListe;
-import infoportalinterface.requests.GetKlassenRequest;
-import infoportalinterface.requests.GetLehrkraefteRequest;
-import infoportalinterface.requests.GetNotenRequest;
-import infoportalinterface.requests.LoginRequest;
-import infoportalinterface.requests.LogoutRequest;
+import infoportalinterface.requests.*;
 import infoportalinterface.tools.httpclient.ApacheHttpClientWrapper;
 import infoportalinterface.tools.httpclient.HttpClientInterface;
 
@@ -20,6 +16,8 @@ public class InfoPortalInterface {
 	private String basePortalURL;
 
 	private HttpClientInterface httpClient;
+
+	private String mainPage;
 
 	/**
 	 * Model
@@ -58,41 +56,45 @@ public class InfoPortalInterface {
 		return basePortalURL;
 	}
 
-	public String login() throws Exception {
+	public void login() throws Exception {
 
 		LoginRequest loginRequest = new LoginRequest(this);
-		return loginRequest.execute();
+		mainPage = loginRequest.execute();
 
 	}
 
 	public void logout() throws Exception {
 
-		LogoutRequest logoutRequest = new LogoutRequest(this);
+		LogoutRequest logoutRequest = new LogoutRequest(this, mainPage);
 		logoutRequest.execute();
 
 	}
 
-	public void fetchLehrkraefte(String mainPage) throws Exception {
+	public void fetchLehrkraefte() throws Exception {
 		GetLehrkraefteRequest glr = new GetLehrkraefteRequest(this, mainPage);
 		glr.execute();
 
 		lehrkraefte = glr.getLehrkraefte();
 	}
 
-	public void fetchKlassen(String mainPage, IPLehrkraftListe lehrkraefte) throws Exception {
+	public void fetchKlassen(IPLehrkraftListe lehrkraefte) throws Exception {
 		GetKlassenRequest gkr = new GetKlassenRequest(this, mainPage, lehrkraefte);
 		gkr.execute();
 		
 		klassen = gkr.getKlassen();
+
+		GetKlassenteamsRequest gktr = new GetKlassenteamsRequest(this,klassen, lehrkraefte, mainPage);
+		gktr.execute();
+
 	}
 	
-	public void fetchNoten(String mainPage) throws Exception {
+	public void fetchNoten() throws Exception {
 
 		GetNotenRequest gnr = new GetNotenRequest(this, mainPage, lehrkraefte, klassen);
 		gnr.execute();
 		
 	}
-	
+
 	
 	
 	public HttpClientInterface getHttpClient() {

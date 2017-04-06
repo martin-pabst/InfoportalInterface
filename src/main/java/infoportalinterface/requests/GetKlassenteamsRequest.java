@@ -60,7 +60,7 @@ public class GetKlassenteamsRequest extends BaseRequest {
 
         for (IPKlasse klasse : klassen) {
             fetchKlassenTeam(klasse, klassenLinkList.get(klasse), httpClient);
-            System.out.println("Klasesnteam der Klasse " + klasse.getName() + " geholt.");
+            System.out.println("Klassenteam der Klasse " + klasse.getName() + " geholt.");
         }
 
 
@@ -72,7 +72,7 @@ public class GetKlassenteamsRequest extends BaseRequest {
         String response = httpClient.get(url);
         Finder finder = new Finder(response);
 
-        finder.jumpTo("CSG-Datei").jumpTo("<table").markBegin().jumpTo("</table>").markEnd().cropToSelection();
+        finder.jumpTo("CSV-Datei").jumpTo("<table").markBegin().jumpTo("</table>").markEnd().cropToSelection();
 
         while(finder.find("<tr")){
             String line = finder.getXMLText("tr");

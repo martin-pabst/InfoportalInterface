@@ -10,15 +10,15 @@ public class GetLehrkraefteUndKlassenTest {
 	public void test() throws Exception {
 
 		InfoPortalInterface ip = TestInfoPortalInterfaceFactory.getInfoPortalInterface();
-		String mainPage = ip.login();
+		ip.login();
 		
-		ip.fetchLehrkraefte(mainPage);
+		ip.fetchLehrkraefte();
 		
 		System.out.println(ip.getLehrkraefte());
 
-		ip.fetchKlassen(mainPage, ip.getLehrkraefte());
+		ip.fetchKlassen(ip.getLehrkraefte());
 		
-		ip.fetchNoten(mainPage);
+		ip.fetchNoten();
 
 		System.out.println(ip.getKlassen());
 

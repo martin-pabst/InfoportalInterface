@@ -2,21 +2,26 @@ package infoportalinterface.requests;
 
 import infoportalinterface.InfoPortalInterface;
 import infoportalinterface.tools.httpclient.HttpClientInterface;
+import infoportalinterface.tools.string.Finder;
 
 public class LogoutRequest extends BaseRequest {
 
-	public LogoutRequest(InfoPortalInterface infoPortalInterface) {
-		super(infoPortalInterface);
+	private String mainPage;
+
+	public LogoutRequest(InfoPortalInterface infoPortalInterface, String mainPage) {
+	    super(infoPortalInterface);
+	    this.mainPage = mainPage;
 	}
 
 	@Override
 	public String execute() throws Exception {
 
+		Finder finder = new Finder(mainPage);
+		String logoutURL = finder.findLinkURL("Abmelden</b>");
+
 		HttpClientInterface httpClient = getHttpClient();
-		
-		httpClient.addParameter("signoff", "1");
-		String response = httpClient.get(getBasePortalURL() + "schule_portal/index.php");
-		// https://portal.mzml.de/portal/csgying/schule_portal/index.php?signoff=1
+
+		String response = httpClient.get(logoutURL);
 		expectResponseContains(response, "form name='signon'");
 		
 		return response;
