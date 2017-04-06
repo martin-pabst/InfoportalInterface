@@ -86,6 +86,9 @@ public class InfoPortalInterface {
 		GetKlassenteamsRequest gktr = new GetKlassenteamsRequest(this,klassen, lehrkraefte, mainPage);
 		gktr.execute();
 
+		GetKlassenStundenplaeneRequest gksr = new GetKlassenStundenplaeneRequest(this, klassen, lehrkraefte, mainPage);
+		gksr.execute();
+
 	}
 	
 	public void fetchNoten() throws Exception {

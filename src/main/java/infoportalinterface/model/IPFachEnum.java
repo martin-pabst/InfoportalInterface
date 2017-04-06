@@ -31,7 +31,9 @@ public enum IPFachEnum {
 
     Ku("Kunst", "Ku"),
     Mu("Musik", "Mu"),
-    S("Sport", "Smw");
+    S("Sport", "Smw"),
+    Sm("Sport männlich", "Sm"),
+    Sw("Sport weiblich", "Sw");
 
     private String anzeigeform;
     private String kurzform;
@@ -49,6 +51,7 @@ public enum IPFachEnum {
             if(ipfe.kurzform.equalsIgnoreCase(kurzform)){
                 return ipfe;
             }
+
         }
 
         return null;

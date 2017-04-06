@@ -19,4 +19,14 @@ public class IPLehrkraftListe extends ArrayList<IPLehrkraft> {
 
 	}
 
+    public IPLehrkraft findByKuerzel(String lehrerkuerzel) {
+		for (IPLehrkraft lehrkraft : this) {
+
+			if (lehrkraft.getStundenplan_id().equals(lehrerkuerzel)) {
+				return lehrkraft;
+			}
+		}
+
+		return null;
+    }
 }
