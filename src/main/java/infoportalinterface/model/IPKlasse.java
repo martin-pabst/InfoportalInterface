@@ -100,4 +100,15 @@ public class IPKlasse {
 		return schuelerList.findSchueler(rufname, familienname);
 
 	}
+
+    public String getNameWithout0() {
+
+		String name = getName();
+		if(name.startsWith("0")){
+			return name.substring(1);
+		} else {
+			return name;
+		}
+
+    }
 }

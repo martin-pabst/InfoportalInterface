@@ -24,6 +24,8 @@ public class IPSchueler {
 
 	private List<IPFach> faecher = new ArrayList<>();
 
+	private List<IPAbsenz> absenzen = new ArrayList<>();
+
 	@Override
 	public String toString() {
 
@@ -154,6 +156,15 @@ public class IPSchueler {
 		return faecher.stream().filter(ipfach -> ipfach.hasFach(ipfe) ).findFirst().orElse(null);
 	}
 
+	public void addAbsenz(IPAbsenz absenz) {
+
+		absenzen.add(absenz);
+
+	}
+
+	public void clearAbsenzen(){
+		absenzen.clear();
+	}
 }
 
 

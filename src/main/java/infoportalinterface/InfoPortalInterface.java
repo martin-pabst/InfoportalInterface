@@ -98,7 +98,13 @@ public class InfoPortalInterface {
 		
 	}
 
-	
+	public void fetchAbsenzen() throws Exception {
+
+		GetSchuelerAbsenzenRequest gar = new GetSchuelerAbsenzenRequest(this, klassen, lehrkraefte, mainPage);
+		gar.execute();
+
+	}
+
 	
 	public HttpClientInterface getHttpClient() {
 

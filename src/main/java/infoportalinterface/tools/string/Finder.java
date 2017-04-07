@@ -151,4 +151,13 @@ public class Finder {
 	public String toString() {
 		return text;
 	}
+
+	public Finder skipNext(String s) {
+
+		jumpTo(s);
+		skipFoundWord();
+
+		return this;
+
+	}
 }

@@ -17,10 +17,14 @@ public class GetLehrkraefteUndKlassenTest {
 		System.out.println(ip.getLehrkraefte());
 
 		ip.fetchKlassen(ip.getLehrkraefte());
-		
-		ip.fetchNoten();
 
 		System.out.println(ip.getKlassen());
+
+        ip.fetchAbsenzen();
+        System.out.println("\nAbsenzen fertig geholt!\n");
+
+        ip.fetchNoten();
+        System.out.println("\nNoten fertig geholt!\n");
 
 		ip.logout();
 
