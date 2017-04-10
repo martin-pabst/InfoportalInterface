@@ -12,6 +12,12 @@ public class Config {
     @Element
     private Credentials credentials;
 
+    @Element
+    public Templates templates;
+
+    @Element
+    public String outputfolder;
+
     public Config() {
     }
 

@@ -27,7 +27,7 @@ public class IPKlassenteam {
 
     }
 
-
-
-
+    public Map<IPFachEnum, List<IPLehrkraft>> getKlassenteamMap() {
+        return kt;
+    }
 }

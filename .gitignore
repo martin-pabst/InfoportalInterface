@@ -1,6 +1,7 @@
 
 .idea/
 data/Config.xml
+data/Ausgabe
 lib/
 target/
 InfoportalInterface.iml

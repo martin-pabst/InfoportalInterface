@@ -83,8 +83,10 @@ public class GetLehrkraefteRequest extends BaseRequest {
 
 				IPLehrkraft lk = lehrkraefte.findByRufnameLeerzeichenFamilienname(rufname + " " + familienname);
 				if (lk != null) {
+
 					lk.setAkadGrad(akadGrad);
 					lk.setDienstgrad(dienstgrad);
+
 				}
 
 			}

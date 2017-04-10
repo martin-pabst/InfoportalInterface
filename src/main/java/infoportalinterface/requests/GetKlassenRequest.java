@@ -89,7 +89,7 @@ public class GetKlassenRequest extends BaseRequest {
 //
 //				try {
 //					HttpClientInterface httpClientForked = httpClient.forkClient();
-//					fetchSchuelerdatenInKlasse(klasse, klassenLinkList.get(klasse), httpClient);
+//					fetchSchuelerdatenInKlasse(klasse, klassenLinkList.findByKlassenname(klasse), httpClient);
 //					httpClientForked.close();
 //				} catch (Exception e) {
 //
@@ -358,7 +358,10 @@ public class GetKlassenRequest extends BaseRequest {
 				IPKlasse klasse = new IPKlasse(id, klassenName, klassenleitung1, klassenleitung2, klassenleitung3,
 						lehrkraefte);
 
-				klassen.add(klasse);
+				if(klasse.getName().contains("5")){
+					klassen.add(klasse);
+				}
+
 
 			}
 

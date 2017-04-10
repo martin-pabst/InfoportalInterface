@@ -84,7 +84,7 @@ public class GetNotenRequest extends BaseRequest {
 //
 //                try {
 //                    //HttpClientInterface httpClientForked = httpClient.forkClient();
-//                    fetchNotenInKlasse(klasse, klassenLinkList.get(klasse), httpClient);
+//                    fetchNotenInKlasse(klasse, klassenLinkList.findByKlassenname(klasse), httpClient);
 //                    //httpClientForked.close();
 //                } catch (Exception e) {
 //                    System.out.println(e);

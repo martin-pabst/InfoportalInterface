@@ -65,4 +65,51 @@ public class IPLehrkraft {
 
 	}
 
+    public String getNameMitDienstgrad() {
+        String s = "";
+
+        if(dienstgrad != null){
+        	s += dienstgrad;
+		}
+
+		if(akadGrad != null && !akadGrad.isEmpty()){
+        	s += " " + akadGrad;
+		}
+
+        if(rufname != null){
+            s += " " + rufname;
+        }
+
+        if(familienname != null){
+            s += " " + familienname;
+        }
+
+
+		return s;
+    }
+
+    public String getUnterzeichnername() {
+        String s = "";
+
+        if(akadGrad != null && !akadGrad.isEmpty()){
+            s += " " + akadGrad;
+        }
+
+        if(rufname != null){
+            s += rufname;
+        }
+
+        if(familienname != null){
+            s += " " + familienname;
+        }
+
+        if(dienstgrad != null){
+            s += ", " + dienstgrad;
+        }
+
+        return s;
+
+    }
+
+
 }

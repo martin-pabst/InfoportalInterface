@@ -43,4 +43,32 @@ public class SitzungsleiterList extends ArrayList<Sitzungsleiter> {
 
     }
 
+    public Sitzungsleiter findByKlassenname(String klasse) {
+
+        for(Sitzungsleiter sl: this){
+            if(klasseEquals(sl.getKlasse(), klasse)){
+                return sl;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean klasseEquals(String name1, String name2){
+        if(name1 == null || name2 == null){
+            return false;
+        }
+
+        if(name1.startsWith("0")){
+            name1 = name1.substring(1);
+        }
+
+        if(name2.startsWith("0")){
+            name2 = name2.substring(1);
+        }
+
+        return name1.equals(name2);
+
+    }
+
 }

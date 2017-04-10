@@ -165,6 +165,10 @@ public class IPSchueler {
 	public void clearAbsenzen(){
 		absenzen.clear();
 	}
+
+	public List<IPAbsenz> getAbsenzen() {
+		return absenzen;
+	}
 }
 
 
