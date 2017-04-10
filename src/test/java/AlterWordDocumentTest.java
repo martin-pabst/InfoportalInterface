@@ -1,5 +1,5 @@
-import infoportalinterface.InfoPortalInterface;
 import org.junit.Test;
+import tools.word.RowChanger;
 import tools.word.WordTool;
 
 import java.util.ArrayList;
@@ -12,20 +12,19 @@ public class AlterWordDocumentTest {
 		WordTool wt = new WordTool("data/test/Klassenkonferenz Protokoll 2016.docx",
 				"data/test/TestProtokoll.docx");
 
-		String lineXML = wt.extractLineXML("$L1");
+		String hint = "$L1";
 
-        ArrayList<String> lines = new ArrayList<>();
 
         for(int i = 0; i < 10; i++){
-            String s =lineXML;
-            s = s.replace("$L1", "Lehrkraft Links Nr. " + i);
-            s = s.replace("$L2", "Lehrkraft Rechts Nr. " + i);
-            lines.add(s);
+
+            RowChanger rc = wt.getRowChanger(hint);
+
+            rc.set("$L1", "Lehrkraft links Nr. " + i);
+            rc.set("$L2", "Lehrkraft rechts Nr. " + i);
+
         }
 
-        wt.replaceLineXML("$L1", lines);
-
-		wt.write(wt.getXml());
+		wt.write();
 
 
 	}

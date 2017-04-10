@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ public class WordTool {
     private Path pathToDocumentXML;
     private String xml;
     private String filename;
+
+    private HashMap<String, ArrayList<RowChanger>> rowChangers = new HashMap<>();
 
     public WordTool(String originalFilename, String filename) throws URISyntaxException, IOException {
 
@@ -48,7 +51,13 @@ public class WordTool {
         return xml;
     }
 
-    public void write(String xml) throws URISyntaxException {
+    public void setXml(String xml) {
+        this.xml = xml;
+    }
+
+    public void write() throws URISyntaxException {
+
+        commitRowChangers();
 
         URI docxUri = URI.create("jar:file:" + Paths.get(filename).toUri().getPath());
 
@@ -68,8 +77,36 @@ public class WordTool {
 
     }
 
+    private void commitRowChangers() {
 
-    public String extractLineXML(String hint){
+        rowChangers.forEach( (hint, rowChangerList) -> {
+
+            String originalRow = extractTableRowXML(hint);
+
+            ArrayList<String> newLines = new ArrayList<>();
+
+            for(RowChanger rc: rowChangerList){
+
+                String newLine = originalRow;
+
+                for(CellData cd: rc.getCellDataList()){
+
+                    newLine = newLine.replace(cd.getPlaceholder(), cd.getNewValue());
+
+                }
+
+                newLines.add(newLine);
+
+            }
+
+            replaceTableRowXML(hint, newLines);
+
+        });
+
+    }
+
+
+    private String extractTableRowXML(String hint){
 
         int i = xml.indexOf(hint);
         int lineBegin = xml.lastIndexOf("<w:tr ",i);
@@ -79,7 +116,7 @@ public class WordTool {
 
     }
 
-    public void replaceLineXML(String hint, List<String> xmlForNewLines){
+    private void replaceTableRowXML(String hint, List<String> xmlForNewLines){
 
         int i = xml.indexOf(hint);
         int lineBegin = xml.lastIndexOf("<w:tr ",i);
@@ -100,6 +137,39 @@ public class WordTool {
 
         xml = sb.toString();
 
+    }
+
+    public RowChanger getRowChanger(String hint){
+
+        ArrayList<RowChanger> rowChangerList = rowChangers.get(hint);
+
+        if(rowChangerList == null){
+            rowChangerList = new ArrayList<>();
+            rowChangers.put(hint, rowChangerList);
+        }
+
+        RowChanger rc = new RowChanger(hint);
+        rowChangerList.add(rc);
+
+        return rc;
+
+    }
+
+    public void cancelRowChanger(RowChanger rc){
+
+        ArrayList<RowChanger> rowChangerList = rowChangers.get(rc.getHint());
+
+        if(rowChangerList != null){
+            rowChangerList.remove(rc);
+            if(rowChangerList.size() == 0){
+                rowChangers.remove(rc.getHint());
+            }
+        }
+
+    }
+
+    public void replace(String placeholder, String newValue){
+        xml = xml.replace(placeholder, newValue);
     }
 
 

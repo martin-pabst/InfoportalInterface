@@ -1,16 +1,18 @@
-import config.TestConfig;
-import config.TestCredentials;
+package klassensitzung;
+
 import infoportalinterface.InfoPortalInterface;
+import klassensitzung.config.Config;
+import klassensitzung.config.Credentials;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 
-public class TestInfoPortalInterfaceFactory {
+public class InfoPortalInterfaceFactory {
 
     private static InfoPortalInterface ipi;
 
-    public static InfoPortalInterface getInfoPortalInterface() {
+    public static InfoPortalInterface getInfoPortalInterface(Config config) {
 
 
         Serializer serializer = new Persister();
@@ -20,9 +22,8 @@ public class TestInfoPortalInterfaceFactory {
 
             try {
 
-                TestConfig config = serializer.read(TestConfig.class, source);
 
-                TestCredentials credentials = config.getCredentials();
+                Credentials credentials = config.getCredentials();
 
                 ipi = new InfoPortalInterface(credentials.username, credentials.password,
                       credentials.baseurl);
