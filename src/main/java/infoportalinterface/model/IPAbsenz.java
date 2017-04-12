@@ -28,4 +28,40 @@ public class IPAbsenz {
         this.stundeVon = stundeVon;
         this.stundeBis = stundeBis;
     }
+
+    public Date getVon() {
+        return von;
+    }
+
+    public Date getBis() {
+        return bis;
+    }
+
+    public Integer getTage() {
+        return tage;
+    }
+
+    public Integer getStunden() {
+        return stunden;
+    }
+
+    public Integer getMinuten() {
+        return minuten;
+    }
+
+    public String getArtText() {
+        return artText;
+    }
+
+    public IPAbsenzArt getArt() {
+        return art;
+    }
+
+    public Integer getStundeVon() {
+        return stundeVon;
+    }
+
+    public Integer getStundeBis() {
+        return stundeBis;
+    }
 }

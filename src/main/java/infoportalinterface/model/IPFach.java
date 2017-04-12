@@ -3,7 +3,7 @@ package infoportalinterface.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IPFach {
+public class IPFach implements Comparable<IPFach> {
 
 	private IPFachEnum fachEnum = null;
 
@@ -13,6 +13,45 @@ public class IPFach {
 	private List<IPNote> schulaufgabenNoten = new ArrayList<>();
 	private IPNote durchschnittGL; // Durchschnitt der großen Leistungsnachweise
 	private IPNote durchschnittKL; // Durchschnitt der kleinen
+
+
+    public Integer getZeugnisnoteBerechnet(){
+
+        if(sG != null){
+
+            double note = sG.getValue();
+            int ganzerAnteil = (int)note;
+            double rest = note - ganzerAnteil;
+
+            int zeugnisnote = ganzerAnteil;
+
+            if(rest >= 0.5 - 0.00000001){
+                zeugnisnote++;
+            }
+
+            return zeugnisnote;
+
+        }
+
+        return null;
+
+    }
+
+	public Integer getJahreszeugnisNote(){
+
+		if(jZ != null){
+
+				return (int)jZ.getValue();
+
+		} else {
+
+		    return getZeugnisnoteBerechnet();
+
+		}
+
+	}
+
+
 
 	@Override
 	public String toString() {
@@ -100,4 +139,14 @@ public class IPFach {
 		this.durchschnittKL = kl;
 
 	}
+
+    @Override
+    public int compareTo(IPFach fach) {
+
+	    Double note = sG.getValue();
+	    Double noteFach = fach.sG.getValue();
+
+	    return noteFach.compareTo(note); // Größere Noten zuerst
+
+    }
 }

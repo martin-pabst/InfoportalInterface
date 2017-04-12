@@ -173,4 +173,9 @@ public class WordTool {
     }
 
 
+    public boolean hasHint(String hint) {
+
+        return xml.contains(hint);
+
+    }
 }

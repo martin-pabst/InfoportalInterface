@@ -45,6 +45,10 @@ public class IPLehrkraft {
 		return rufname;
 	}
 
+	public String getAkadGrad() {
+		return akadGrad;
+	}
+
 	public String getBenutzername() {
 		return benutzername;
 	}
@@ -112,4 +116,7 @@ public class IPLehrkraft {
     }
 
 
+    public String getDienstgrad() {
+        return dienstgrad;
+    }
 }

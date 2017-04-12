@@ -79,4 +79,19 @@ public enum IPFachEnum {
     public String toString() {
         return kurzform;
     }
+
+    public boolean istVorrueckungsfach(int jahrgangsstufe){
+
+        if(this == S || this == Sw || this == Sm){
+            return false;
+        }
+
+        if(this == Mu && jahrgangsstufe == 5){
+            return false;
+        }
+
+        return true;
+
+    }
+
 }

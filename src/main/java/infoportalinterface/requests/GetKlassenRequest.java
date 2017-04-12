@@ -1,5 +1,11 @@
 package infoportalinterface.requests;
 
+import infoportalinterface.InfoPortalInterface;
+import infoportalinterface.model.*;
+import infoportalinterface.tools.httpclient.HttpClientInterface;
+import infoportalinterface.tools.string.Finder;
+import infoportalinterface.tools.string.WordNotFoundException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,16 +13,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import infoportalinterface.InfoPortalInterface;
-import infoportalinterface.model.IPErziehungsberechtigter;
-import infoportalinterface.model.IPKlasse;
-import infoportalinterface.model.IPKlassenListe;
-import infoportalinterface.model.IPLehrkraftListe;
-import infoportalinterface.model.IPSchueler;
-import infoportalinterface.tools.httpclient.HttpClientInterface;
-import infoportalinterface.tools.string.Finder;
-import infoportalinterface.tools.string.WordNotFoundException;
 
 public class GetKlassenRequest extends BaseRequest {
 
@@ -358,7 +354,7 @@ public class GetKlassenRequest extends BaseRequest {
 				IPKlasse klasse = new IPKlasse(id, klassenName, klassenleitung1, klassenleitung2, klassenleitung3,
 						lehrkraefte);
 
-				if(klasse.getName().contains("5")){
+				if(klasse.getName().contains("10A")){
 					klassen.add(klasse);
 				}
 

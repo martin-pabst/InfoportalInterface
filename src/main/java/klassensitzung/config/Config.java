@@ -18,6 +18,27 @@ public class Config {
     @Element
     public String outputfolder;
 
+    @Element
+    public String schuljahr;
+
+    @Element
+    public String datumlehrerkonferenz;
+
+    @Element
+    public String datumklassenlehrersprechstunde;
+
+    @Element
+    public String fristanmeldungnachpruefung;
+
+    @Element
+    public String zeitraumnachpruefung;
+
+    @Element
+    public String datumzeugnis;
+
+    @Element
+    public String anschriftliste;
+
     public Config() {
     }
 

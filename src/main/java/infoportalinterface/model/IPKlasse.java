@@ -12,6 +12,8 @@ public class IPKlasse {
 
 	private IPKlassenteam klassenteam = new IPKlassenteam();
 
+	private int jahrgangsstufe;
+
 	public IPKlasse(String id, String name, String klassenleitung1, String klassenleitung2, String klassenleitung3,
 			IPLehrkraftListe lehrkraefte) {
 		super();
@@ -21,6 +23,31 @@ public class IPKlasse {
 		this.klassenleitung1 = lehrkraefte.findByRufnameLeerzeichenFamilienname(klassenleitung1);
 		this.klassenleitung2 = lehrkraefte.findByRufnameLeerzeichenFamilienname(klassenleitung2);
 		this.klassenleitung3 = lehrkraefte.findByRufnameLeerzeichenFamilienname(klassenleitung3);
+
+		jahrgangsstufe = convertNameToJahrgangsstufe(name);
+
+
+	}
+
+	private int convertNameToJahrgangsstufe(String name) {
+
+		while(name.startsWith("0")){
+			name = name.substring(1);
+		}
+
+		while(!Character.isDigit(name.charAt(name.length() - 1))){
+			name = name.substring(0, name.length() - 1);
+		}
+
+		int jgst = 10;
+
+		try{
+			jgst = Integer.parseInt(name);
+		} catch (NumberFormatException ex){
+
+		}
+
+		return jgst;
 
 	}
 
@@ -110,5 +137,9 @@ public class IPKlasse {
 			return name;
 		}
 
+    }
+
+    public int getJahrgangsstufe() {
+        return jahrgangsstufe;
     }
 }

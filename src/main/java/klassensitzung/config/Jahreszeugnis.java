@@ -15,4 +15,13 @@ public class Jahreszeugnis {
 
     @Element
     public String klassenkonferenzprotokoll;
+
+    @Element
+    public String notendurchschnittliste;
+
+    @Element
+    public String nichtvorrueckerliste;
+
+    @Element
+    public Briefe briefe;
 }

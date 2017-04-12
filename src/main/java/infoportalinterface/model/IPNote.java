@@ -22,7 +22,7 @@ public class IPNote {
 
 	@Override
 	public String toString() {
-		return valueAsText;
+		return valueAsText.replace(".", ",");
 	}
 
 	public IPNote(String valueAsText, double value, IPTendenz tendenz) {
