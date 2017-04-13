@@ -1,8 +1,6 @@
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-import infoportalinterface.InfoPortalInterface;
+import pabstsoftware.infoportalinterface.InfoPortalInterface;
 
 public class GetLehrkraefteUndKlassenTest {
 

@@ -1,8 +1,6 @@
 import org.junit.Test;
-import tools.word.RowChanger;
-import tools.word.WordTool;
-
-import java.util.ArrayList;
+import pabstsoftware.tools.word.RowChanger;
+import pabstsoftware.tools.word.WordTool;
 
 public class AlterWordDocumentTest {
 
