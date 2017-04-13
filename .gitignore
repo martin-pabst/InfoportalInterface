@@ -5,3 +5,4 @@ data/Ausgabe
 lib/
 target/
 InfoportalInterface.iml
+/data/TestConfig.xml
