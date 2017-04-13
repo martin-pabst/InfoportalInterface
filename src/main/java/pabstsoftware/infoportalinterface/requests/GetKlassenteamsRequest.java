@@ -69,7 +69,6 @@ public class GetKlassenteamsRequest extends BaseRequest {
             Logger logger = LoggerFactory.getLogger(this.getClass());
             logger.info("Klassenteam der Klasse " + klasse.getName() + " geholt.");
 
-            System.out.println();
         }
 
 
