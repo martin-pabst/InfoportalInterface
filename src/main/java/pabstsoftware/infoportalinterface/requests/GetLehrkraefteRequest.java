@@ -114,6 +114,7 @@ public class GetLehrkraefteRequest extends BaseRequest {
 		finder.setText(response);
 
 		url = finder.findLinkURL("Ändern");
+
 		response = httpClient.get(url);
 		finder.setText(response);
 

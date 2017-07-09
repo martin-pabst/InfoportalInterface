@@ -8,6 +8,9 @@ public class LoginLogoutTest {
 	public void test() throws Exception {
 
 		InfoPortalInterface ip = TestInfoPortalInterfaceFactory.getInfoPortalInterface();
+
+		System.out.println("InfoPortalInterface: " + ip.toString());
+
 		ip.login();
 		ip.logout();
 

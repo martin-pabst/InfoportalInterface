@@ -1,8 +1,8 @@
-import config.TestConfig;
-import config.TestCredentials;
-import pabstsoftware.infoportalinterface.InfoPortalInterface;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+import pabstsoftware.infoportalinterface.InfoPortalInterface;
+import pabstsoftware.klassensitzung.config.Config;
+import pabstsoftware.klassensitzung.config.Credentials;
 
 import java.io.File;
 
@@ -20,9 +20,9 @@ public class TestInfoPortalInterfaceFactory {
 
             try {
 
-                TestConfig config = serializer.read(TestConfig.class, source);
+                Config config = serializer.read(Config.class, source);
 
-                TestCredentials credentials = config.getCredentials();
+                Credentials credentials = config.getCredentials();
 
                 ipi = new InfoPortalInterface(credentials.username, credentials.password,
                       credentials.baseurl);

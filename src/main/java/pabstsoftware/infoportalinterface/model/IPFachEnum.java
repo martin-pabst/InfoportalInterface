@@ -54,6 +54,10 @@ public enum IPFachEnum {
 
         }
 
+        if(kurzform.equals("NT")){
+            return NuT;
+        }
+
         return null;
     }
 

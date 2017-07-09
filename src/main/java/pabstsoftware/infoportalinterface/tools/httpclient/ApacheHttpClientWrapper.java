@@ -1,12 +1,5 @@
 package pabstsoftware.infoportalinterface.tools.httpclient;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
@@ -26,6 +19,13 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ApacheHttpClientWrapper implements HttpClientInterface {
 
 	private String url;
@@ -44,7 +44,7 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
 
 	public ApacheHttpClientWrapper(CookieStore cookieStore) {
 
-		requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
+		requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
 		context = HttpClientContext.create();
 		context.setCookieStore(cookieStore);
 		httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
@@ -225,7 +225,7 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
 	}
 
 	private String convertStreamToString(java.io.InputStream is) {
-		try (java.util.Scanner s = new java.util.Scanner(is)) {
+		try (java.util.Scanner s = new java.util.Scanner(is, "UTF-8")) {
 			return s.useDelimiter("\\A").hasNext() ? s.next() : "";
 		}
 	}
