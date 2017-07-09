@@ -33,7 +33,9 @@ public class Sitzungsleiter {
             return "i.V. " + sitzungsleiter;
         }
 
-        if(sitzungsleiter.contains("Fischer") || sitzungsleiter.contains("Schleßing")){
+        if(sitzungsleiter.contains("Fischer") ||
+                sitzungsleiter.contains("Schleßing") ||
+                sitzungsleiter.contains("Badum")){
             return "i.A. " + sitzungsleiter;
         }
 
@@ -46,7 +48,9 @@ public class Sitzungsleiter {
             return "Sitzungsleiter";
         }
 
-        if(sitzungsleiter.contains("Fischer") || sitzungsleiter.contains("Schleßing")){
+        if(sitzungsleiter.contains("Fischer")
+                || sitzungsleiter.contains("Schleßing")
+                || sitzungsleiter.contains("Badum")){
             return "Sitzungsleiterin";
         }
 
