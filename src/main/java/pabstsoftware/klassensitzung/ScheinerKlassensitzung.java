@@ -37,12 +37,19 @@ public class ScheinerKlassensitzung {
      * @return
      */
     public static boolean holeKlasse(String name){
-        if(name.contains("07E")){
+
+
+
+/*
+        if(name.toLowerCase().startsWith("08a")){
             return true;
         } else {
             return false;
         }
-//        return true;
+*/
+
+
+        return true;
     }
 
     public static void main(String[] args) {

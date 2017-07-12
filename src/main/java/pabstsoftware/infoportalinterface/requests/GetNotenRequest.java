@@ -1,10 +1,5 @@
 package pabstsoftware.infoportalinterface.requests;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
@@ -12,6 +7,11 @@ import pabstsoftware.infoportalinterface.model.*;
 import pabstsoftware.infoportalinterface.tools.httpclient.HttpClientInterface;
 import pabstsoftware.infoportalinterface.tools.string.Finder;
 import pabstsoftware.infoportalinterface.tools.string.WordNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GetNotenRequest extends BaseRequest {
 
@@ -150,7 +150,9 @@ public class GetNotenRequest extends BaseRequest {
 
         if (wiederholungText.contains("Jgst.")) {
 
-            wiederholungText = finder.getXMLText("span");
+            Finder finder1 = new Finder(wiederholungText);
+
+            wiederholungText = finder1.getXMLText("span");
             findWiederholungen(schueler, wiederholungText);
 
         }

@@ -14,7 +14,7 @@ public class TestInfoPortalInterfaceFactory {
 
 
         Serializer serializer = new Persister();
-        File source = new File("data/Config.xml");
+        File source = new File("data/TestConfig.xml");
 
         if (ipi == null) {
 
