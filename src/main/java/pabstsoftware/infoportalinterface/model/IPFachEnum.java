@@ -22,6 +22,7 @@ public enum IPFachEnum {
     Ch("Chinesisch", "Ch"),
 
     WR("Wirtschafts- und Rechtslehre", "WR"),
+    G("Geschichte", "G"),
     Geo("Geographie", "Geo"),
     Sk("Sozialkunde", "Sk"),
 
@@ -58,6 +59,8 @@ public enum IPFachEnum {
             return NuT;
         }
 
+        System.out.println("Fach " + kurzform + " nicht gefunden!");
+
         return null;
     }
 
@@ -90,7 +93,7 @@ public enum IPFachEnum {
             return false;
         }
 
-        if(this == Mu && jahrgangsstufe == 5){
+        if(this == Mu && jahrgangsstufe <= 6){
             return false;
         }
 

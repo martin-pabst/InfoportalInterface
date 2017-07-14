@@ -192,6 +192,13 @@ public class Klassenkonferenzprotokoll {
 
                 if (fach.getJahreszeugnisNote() != null) {
 
+                    if(fach.getFachEnum() == IPFachEnum.Mu){
+                        if(fach.getsG().getValue() > 4.2){
+                            System.out.println(schueler.getFamiliennameRufname() +
+                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue());
+                        }
+                    }
+
                     if (fach.getJahreszeugnisNote() == 5) {
                         if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
                             anzahl5erInVorrueckungsfaechern++;

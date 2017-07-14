@@ -97,6 +97,8 @@ public class Notendurchschnittliste {
             rc.set("$N1", schueler.getFamiliennameRufname());
             rc.set("$D1", schueler.getDurchschnittVorrueckungsfaecher2Dez());
 
+//            System.out.println(schueler.debugOutputDurchschnitVorrueckungsfaecher());
+
         }
 
     }

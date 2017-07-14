@@ -243,7 +243,8 @@ public class IPSchueler implements Comparable<IPSchueler> {
         int anzahl = 0;
 
         for(IPFach fach: faecher){
-            if(fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe()) && fach.getJahreszeugnisNote() != null ){
+            if(fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())
+                    && fach.getJahreszeugnisNote() != null && fach.getJahreszeugnisNote() > 0 ){
                 anzahl++;
                 notensumme += fach.getJahreszeugnisNote();
             }
@@ -325,6 +326,40 @@ public class IPSchueler implements Comparable<IPSchueler> {
         } catch (NumberFormatException ex){
             return null;
         }
+
+    }
+
+    public String debugOutputDurchschnitVorrueckungsfaecher() {
+
+        String s = familienname + " " + rufname + "\n";
+
+        double notensumme = 0;
+        int anzahl = 0;
+
+        for(IPFach fach: faecher){
+            if(fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe()) && fach.getJahreszeugnisNote() != null
+                    && fach.getJahreszeugnisNote() > 0 ){
+                anzahl++;
+                notensumme += fach.getJahreszeugnisNote();
+                s += fach.getFachEnum().getKurzform() + " (" + fach.getJahreszeugnisNote() + "), ";
+            }
+        }
+
+        double durchschnitt = 0;
+
+        if(anzahl > 0){
+
+            durchschnitt = notensumme / anzahl;
+
+        } else {
+            durchschnitt = 0d;
+        }
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        s += " => "  + df.format(durchschnitt).replace(".", ",");
+
+
+        return s;
 
     }
 }

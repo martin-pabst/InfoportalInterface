@@ -41,7 +41,7 @@ public class ScheinerKlassensitzung {
 
 
 /*
-        if(name.toLowerCase().startsWith("08a")){
+        if(name.toLowerCase().startsWith("07a")){
             return true;
         } else {
             return false;
