@@ -10,17 +10,23 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.URI;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,246 +34,261 @@ import java.util.Map;
 
 public class ApacheHttpClientWrapper implements HttpClientInterface {
 
-	private String url;
+    private String url;
 
-	private ArrayList<Parameter> parameters = new ArrayList<>();
+    private ArrayList<Parameter> parameters = new ArrayList<>();
 
-	private RequestConfig requestConfig;
-	private CookieStore cookieStore;
-	private HttpClientContext context;
-	private CloseableHttpClient httpClient;
+    private RequestConfig requestConfig;
+    private CookieStore cookieStore;
+    private HttpClientContext context;
+    private CloseableHttpClient httpClient;
 
-	boolean requestJustExecuted = false;
+    boolean requestJustExecuted = false;
 
-	private HashMap<String, String> lastHeaders = new HashMap<>();
-	private int lastStatusCode = 0;
+    private HashMap<String, String> lastHeaders = new HashMap<>();
+    private int lastStatusCode = 0;
 
-	public ApacheHttpClientWrapper(CookieStore cookieStore) {
+    public ApacheHttpClientWrapper(CookieStore cookieStore) {
 
-		requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
-		context = HttpClientContext.create();
-		context.setCookieStore(cookieStore);
-		httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
-				.setRedirectStrategy(new LaxRedirectStrategy()).build();
+        requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+        context = HttpClientContext.create();
+        context.setCookieStore(cookieStore);
+        httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
+                .setRedirectStrategy(new LaxRedirectStrategy()).build();
 
-		System.setProperty("jsse.enableSNIExtension", "false");
+        System.setProperty("jsse.enableSNIExtension", "false");
 
-	}
+    }
 
-	public ApacheHttpClientWrapper() {
+    public ApacheHttpClientWrapper() {
 
-		// PoolingHttpClientConnectionManager cm;
-		//
-		// cm = new PoolingHttpClientConnectionManager();
-		// cm.setMaxTotal(10);
-		// cm.setDefaultMaxPerRoute(10);
+        // PoolingHttpClientConnectionManager cm;
+        //
+            // cm = new PoolingHttpClientConnectionManager();
+        // cm.setMaxTotal(10);
+        // cm.setDefaultMaxPerRoute(10);
 
-		requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
-		cookieStore = new BasicCookieStore();
-		context = HttpClientContext.create();
-		context.setCookieStore(cookieStore);
-		httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
-				.setRedirectStrategy(new LaxRedirectStrategy()).build();
+        SSLContext sslContext = null;
+        try {
+            sslContext = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (certificate, authType) -> true).build();
+            httpClient = HttpClients.custom().setSSLContext(sslContext)
+                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                    .build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            e.printStackTrace();
+        }
 
-		System.setProperty("jsse.enableSNIExtension", "false");
+        requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
+        cookieStore = new BasicCookieStore();
+        context = HttpClientContext.create();
+        context.setCookieStore(cookieStore);
+        httpClient = HttpClients.custom().setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
+                .setRedirectStrategy(new LaxRedirectStrategy())
+                .build();
 
-	}
+        System.setProperty("jsse.enableSNIExtension", "false");
 
-	@Override
-	public HttpClientInterface setURL(String url) {
 
-		// Relative URL?
-		if (!url.startsWith("http") && this.url != null) {
-			int i = this.url.lastIndexOf('/');
-			if (i > 0) {
-				url = this.url.substring(0, i + 1) + url;
-			}
-		}
+    }
 
-		this.url = url;
+    @Override
+    public HttpClientInterface setURL(String url) {
 
-		return this;
-	}
+        // Relative URL?
+        if (!url.startsWith("http") && this.url != null) {
+            int i = this.url.lastIndexOf('/');
+            if (i > 0) {
+                url = this.url.substring(0, i + 1) + url;
+            }
+        }
 
-	@Override
-	public HttpClientInterface addParameter(String key, String value) {
+        this.url = url;
 
-		if (requestJustExecuted) {
-			clearParameters();
-			requestJustExecuted = false;
-		}
+        return this;
+    }
 
-		parameters.add(new Parameter(key, value));
+    @Override
+    public HttpClientInterface addParameter(String key, String value) {
 
-		return this;
-	}
+        if (requestJustExecuted) {
+            clearParameters();
+            requestJustExecuted = false;
+        }
 
-	@Override
-	public HttpClientInterface clearParameters() {
+        parameters.add(new Parameter(key, value));
 
-		parameters.clear();
-		return this;
+        return this;
+    }
 
-	}
+    @Override
+    public HttpClientInterface clearParameters() {
 
-	@Override
-	public String get(String url) throws Exception {
+        parameters.clear();
+        return this;
 
-		setURL(url);
+    }
 
-		HttpGet httpGet = null;
+    @Override
+    public String get(String url) throws Exception {
 
-		URIBuilder b = new URIBuilder(this.url);
+        setURL(url);
 
-		parameters.forEach((p) -> {
-			b.addParameter(p.getKey(), p.getValue());
-		});
+        HttpGet httpGet = null;
 
-		URI uri = b.build();
+        URIBuilder b = new URIBuilder(this.url);
 
-		Logger logger = LoggerFactory.getLogger(this.getClass());
-		logger.debug("Executing GET-Request: " + uri.toString());
+        parameters.forEach((p) -> {
+            b.addParameter(p.getKey(), p.getValue());
+        });
 
+        URI uri = b.build();
 
-		httpGet = new HttpGet(uri);
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.debug("Executing GET-Request: " + uri.toString());
 
-		HttpClientContext context = HttpClientContext.create();
 
-		CloseableHttpResponse response = httpClient.execute(httpGet, context);
+        httpGet = new HttpGet(uri);
 
-		// Get new url, if redirected
-		URI finalUrl = httpGet.getURI();
-		List<URI> locations = context.getRedirectLocations();
-		if (locations != null) {
-			finalUrl = locations.get(locations.size() - 1);
-		}
+        HttpClientContext context = HttpClientContext.create();
 
-		this.url = finalUrl.toString();
+        CloseableHttpResponse response = httpClient.execute(httpGet, context);
 
-		requestJustExecuted = true;
+        // Get new url, if redirected
+        URI finalUrl = httpGet.getURI();
+        List<URI> locations = context.getRedirectLocations();
+        if (locations != null) {
+            finalUrl = locations.get(locations.size() - 1);
+        }
 
-		storeHeaders(response);
+        this.url = finalUrl.toString();
 
-		clearParameters();
+        requestJustExecuted = true;
 
-		return convertStreamToString(response.getEntity().getContent());
+        storeHeaders(response);
 
-	}
+        clearParameters();
 
-	@Override
-	public String get() throws Exception {
+        return convertStreamToString(response.getEntity().getContent());
 
-		return get(url);
+    }
 
-	}
+    @Override
+    public String get() throws Exception {
 
-	@Override
-	public String post(String url) throws Exception {
+        return get(url);
 
-		setURL(url);
+    }
 
-		HttpPost httpPost = new HttpPost(this.url);
+    @Override
+    public String post(String url) throws Exception {
 
-		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        setURL(url);
 
-		parameters.forEach((p) -> {
-			nvps.add(new BasicNameValuePair(p.getKey(), p.getValue()));
-		});
+        HttpPost httpPost = new HttpPost(this.url);
 
-		httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
-		HttpClientContext context = HttpClientContext.create();
+        parameters.forEach((p) -> {
+            nvps.add(new BasicNameValuePair(p.getKey(), p.getValue()));
+        });
 
-		Logger logger = LoggerFactory.getLogger(this.getClass());
-		logger.debug("Executing POST-Request: " + this.url);
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
 
+        HttpClientContext context = HttpClientContext.create();
 
-		CloseableHttpResponse response = httpClient.execute(httpPost, context);
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.debug("Executing POST-Request: " + this.url);
 
-		// Get new url, if redirected
-		URI finalUrl = httpPost.getURI();
-		List<URI> locations = context.getRedirectLocations();
-		if (locations != null) {
-			finalUrl = locations.get(locations.size() - 1);
-		}
 
-		this.url = finalUrl.toString();
+        CloseableHttpResponse response = httpClient.execute(httpPost, context);
 
-		requestJustExecuted = true;
+        // Get new url, if redirected
+        URI finalUrl = httpPost.getURI();
+        List<URI> locations = context.getRedirectLocations();
+        if (locations != null) {
+            finalUrl = locations.get(locations.size() - 1);
+        }
 
-		storeHeaders(response);
+        this.url = finalUrl.toString();
 
-		clearParameters();
+        requestJustExecuted = true;
 
-		return convertStreamToString(response.getEntity().getContent());
+        storeHeaders(response);
 
-	}
+        clearParameters();
 
-	private void storeHeaders(CloseableHttpResponse response) {
+        return convertStreamToString(response.getEntity().getContent());
 
-		lastHeaders.clear();
+    }
 
-		for (org.apache.http.Header header : response.getAllHeaders()) {
+    private void storeHeaders(CloseableHttpResponse response) {
 
-			lastHeaders.put(header.getName(), header.getValue());
+        lastHeaders.clear();
 
-		}
+        for (org.apache.http.Header header : response.getAllHeaders()) {
 
-		lastStatusCode = response.getStatusLine().getStatusCode();
+            lastHeaders.put(header.getName(), header.getValue());
 
-	}
+        }
 
-	@Override
-	public String post() throws Exception {
+        lastStatusCode = response.getStatusLine().getStatusCode();
 
-		return post(url);
+    }
 
-	}
+    @Override
+    public String post() throws Exception {
 
-	private String convertStreamToString(java.io.InputStream is) {
-		try (java.util.Scanner s = new java.util.Scanner(is, "UTF-8")) {
-			return s.useDelimiter("\\A").hasNext() ? s.next() : "";
-		}
-	}
+        return post(url);
 
-	@Override
-	public Map<String, String> getResponseHeaders() {
+    }
 
-		return lastHeaders;
+    private String convertStreamToString(java.io.InputStream is) {
+        try (java.util.Scanner s = new java.util.Scanner(is, "UTF-8")) {
+            return s.useDelimiter("\\A").hasNext() ? s.next() : "";
+        }
+    }
 
-	}
+    @Override
+    public Map<String, String> getResponseHeaders() {
 
-	@Override
-	public int getStatusCode() {
+        return lastHeaders;
 
-		return lastStatusCode;
+    }
 
-	}
+    @Override
+    public int getStatusCode() {
 
-	@Override
-	public HttpClientInterface forkClient() {
+        return lastStatusCode;
 
-		CookieStore cs = new BasicCookieStore();
+    }
 
-		for (Cookie c : context.getCookieStore().getCookies()) {
-			cs.addCookie(c);
-		}
+    @Override
+    public HttpClientInterface forkClient() {
 
-		ApacheHttpClientWrapper httpClient = new ApacheHttpClientWrapper(cs);
-		// httpClient.context.setCookieStore(context.getCookieStore());
+        CookieStore cs = new BasicCookieStore();
 
-		return httpClient;
-	}
+        for (Cookie c : context.getCookieStore().getCookies()) {
+            cs.addCookie(c);
+        }
 
-	@Override
-	public void close() {
+        ApacheHttpClientWrapper httpClient = new ApacheHttpClientWrapper(cs);
+        // httpClient.context.setCookieStore(context.getCookieStore());
 
-		try {
-			httpClient.close();
-		} catch (IOException e) {
+        return httpClient;
+    }
 
-		}
+    @Override
+    public void close() {
 
-	}
+        try {
+            httpClient.close();
+        } catch (IOException e) {
+
+        }
+
+    }
 
 }

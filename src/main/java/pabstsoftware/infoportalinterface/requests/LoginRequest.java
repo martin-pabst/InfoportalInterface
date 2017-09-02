@@ -14,7 +14,7 @@ public class LoginRequest extends BaseRequest {
 
 		HttpClientInterface httpClient = getHttpClient();
 		
-		String response = httpClient.get(getBasePortalURL() + "schule_portal/index_dir/index.php");
+		String response = httpClient.get(getBasePortalURL() + "schule_portal/project/auth/login.php");
 		expectResponseContains(response, "Informationsportal");
 		
 		httpClient.addParameter("user", infoPortalInterface.getUsername());
