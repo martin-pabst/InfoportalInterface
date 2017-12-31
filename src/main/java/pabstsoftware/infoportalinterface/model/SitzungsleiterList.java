@@ -5,7 +5,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pabstsoftware.klassensitzung.ScheinerKlassensitzung;
 
 import java.io.File;
 import java.io.FileInputStream;

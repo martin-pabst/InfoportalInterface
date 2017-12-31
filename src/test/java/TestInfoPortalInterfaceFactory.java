@@ -1,8 +1,8 @@
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
-import pabstsoftware.klassensitzung.config.Config;
-import pabstsoftware.klassensitzung.config.Credentials;
+import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.config.Credentials;
 
 import java.io.File;
 

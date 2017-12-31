@@ -1,15 +1,15 @@
-package pabstsoftware.klassensitzung;
+package pabstsoftware.jahreszeugnis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.SitzungsleiterList;
-import pabstsoftware.klassensitzung.briefe.BriefeWriter;
-import pabstsoftware.klassensitzung.config.Config;
-import pabstsoftware.klassensitzung.klassenkonferenzprotokoll.Klassenkonferenzprotokoll;
-import pabstsoftware.klassensitzung.meldelisten.MeldelistenWriter;
-import pabstsoftware.klassensitzung.notendurchschnittliste.Notendurchschnittliste;
+import pabstsoftware.jahreszeugnis.briefe.BriefeWriter;
+import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.klassenkonferenzprotokoll.Klassenkonferenzprotokoll;
+import pabstsoftware.jahreszeugnis.meldelisten.MeldelistenWriter;
+import pabstsoftware.jahreszeugnis.notendurchschnittliste.Notendurchschnittliste;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -40,13 +40,11 @@ public class ScheinerKlassensitzung {
 
 
 
-/*
-        if(name.toLowerCase().startsWith("07a")){
-            return true;
-        } else {
-            return false;
-        }
-*/
+//        if(name.toLowerCase().startsWith("06B")){
+//            return true;
+//        } else {
+//            return false;
+//        }
 
 
         return true;

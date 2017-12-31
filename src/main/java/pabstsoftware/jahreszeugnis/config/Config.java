@@ -1,4 +1,4 @@
-package pabstsoftware.klassensitzung.config;
+package pabstsoftware.jahreszeugnis.config;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -24,17 +24,6 @@ public class Config {
     @Element
     public String datumlehrerkonferenz;
 
-    @Element
-    public String datumklassenlehrersprechstunde;
-
-    @Element
-    public String fristanmeldungnachpruefung;
-
-    @Element
-    public String zeitraumnachpruefung;
-
-    @Element
-    public String datumzeugnis;
 
     @Element
     public String anschriftliste;

@@ -1,7 +1,7 @@
 package pabstsoftware.anschriftliste;
 
 import pabstsoftware.infoportalinterface.model.IPSchueler;
-import pabstsoftware.klassensitzung.config.Config;
+import pabstsoftware.jahreszeugnis.config.Config;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;

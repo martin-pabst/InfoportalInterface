@@ -1,11 +1,11 @@
-package pabstsoftware.klassensitzung.notendurchschnittliste;
+package pabstsoftware.jahreszeugnis.notendurchschnittliste;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.IPSchueler;
-import pabstsoftware.klassensitzung.ScheinerKlassensitzung;
-import pabstsoftware.klassensitzung.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
+import pabstsoftware.jahreszeugnis.config.Config;
 import pabstsoftware.tools.word.RowChanger;
 import pabstsoftware.tools.word.WordTool;
 

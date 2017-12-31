@@ -1,6 +1,5 @@
-package pabstsoftware.klassensitzung.klassenkonferenzprotokoll;
+package pabstsoftware.jahreszeugnis.klassenkonferenzprotokoll;
 
-import pabstsoftware.infoportalinterface.model.IPFach;
 import pabstsoftware.infoportalinterface.model.IPFachEnum;
 import pabstsoftware.infoportalinterface.model.IPLehrkraft;
 

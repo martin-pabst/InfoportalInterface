@@ -89,6 +89,8 @@ public class GetKlassenStundenplaeneRequest extends BaseRequest {
 
         String[] weekDays = new String[]{"Mo", "Di", "Mi", "Do", "Fr"};
 
+        finder.jumpTo("index_print");
+
         for (String weekDay : weekDays) {
             finder.jumpTo(weekDay);
         }
@@ -117,7 +119,16 @@ public class GetKlassenStundenplaeneRequest extends BaseRequest {
 
             Finder finderData = new Finder(line);
 
+            if(line.matches(".*\\d\\d[\\.|:]\\d\\d - \\d\\d[\\.|:]\\d\\d$")){
+                break;
+            }
+
+            if(line.startsWith("<span")){
+                finderData.jumpTo("</span>").skipFoundWord();
+            }
+
             String fachString = finderData.markBegin().jumpTo("<br").markEnd().getMarkedText();
+            fachString = fachString.trim();
 
             ArrayList<IPFachEnum> faecher = new ArrayList<>();
             ArrayList<IPLehrkraft> lehrerkraefteList = new ArrayList<>();
@@ -131,6 +142,7 @@ public class GetKlassenStundenplaeneRequest extends BaseRequest {
                     faecher.add(fach);
                 } else {
                     allFound = false;
+                    System.out.println("(" + line + ")");
                 }
             }
 
@@ -143,13 +155,13 @@ public class GetKlassenStundenplaeneRequest extends BaseRequest {
                     allFound = false;
                 }
             }
-                if (allFound && faecher.size() == lehrerkraefteList.size()) {
+            if (allFound && faecher.size() == lehrerkraefteList.size()) {
 
-                    for (int i = 0; i < faecher.size(); i++) {
-                        klasse.getKlassenteam().add(lehrerkraefteList.get(i), faecher.get(i));
-                    }
-
+                for (int i = 0; i < faecher.size(); i++) {
+                    klasse.getKlassenteam().add(lehrerkraefteList.get(i), faecher.get(i));
                 }
+
+            }
 
         }
 

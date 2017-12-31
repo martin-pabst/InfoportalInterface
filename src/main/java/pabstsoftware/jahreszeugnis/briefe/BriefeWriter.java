@@ -1,4 +1,4 @@
-package pabstsoftware.klassensitzung.briefe;
+package pabstsoftware.jahreszeugnis.briefe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,8 @@ import pabstsoftware.anschriftliste.ASchueler;
 import pabstsoftware.anschriftliste.Anschriftliste;
 import pabstsoftware.anschriftliste.Briefdaten;
 import pabstsoftware.infoportalinterface.model.*;
-import pabstsoftware.klassensitzung.ScheinerKlassensitzung;
-import pabstsoftware.klassensitzung.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
+import pabstsoftware.jahreszeugnis.config.Config;
 import pabstsoftware.tools.word.RowChanger;
 import pabstsoftware.tools.word.WordTool;
 
@@ -181,11 +181,11 @@ public class BriefeWriter {
         Config config = scheinerKlassensitzung.getConfig();
 
         wt.replace("$DLK", config.datumlehrerkonferenz);
-        wt.replace("$DLS", config.datumklassenlehrersprechstunde);
-        wt.replace("$FN", config.fristanmeldungnachpruefung);
+        wt.replace("$DLS", config.templates.jahreszeugnis.datumklassenlehrersprechstunde);
+        wt.replace("$FN", config.templates.jahreszeugnis.fristanmeldungnachpruefung);
         wt.replace("$SJ", config.schuljahr);
-        wt.replace("$ZNP", config.zeitraumnachpruefung);
-        wt.replace("$DJZ", config.datumzeugnis);
+        wt.replace("$ZNP", config.templates.jahreszeugnis.zeitraumnachpruefung);
+        wt.replace("$DJZ", config.templates.jahreszeugnis.datumzeugnis);
 
         Sitzungsleiter sl = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
         if(sl != null){

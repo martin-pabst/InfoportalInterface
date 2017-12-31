@@ -1,12 +1,12 @@
-package pabstsoftware.klassensitzung.meldelisten;
+package pabstsoftware.jahreszeugnis.meldelisten;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.IPLehrkraft;
 import pabstsoftware.infoportalinterface.model.Sitzungsleiter;
-import pabstsoftware.klassensitzung.ScheinerKlassensitzung;
-import pabstsoftware.klassensitzung.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
+import pabstsoftware.jahreszeugnis.config.Config;
 import pabstsoftware.tools.file.FileTool;
 import pabstsoftware.tools.word.WordTool;
 
@@ -116,7 +116,7 @@ public class MeldelistenWriter {
 
         wt.replace("$DLK", config.datumlehrerkonferenz);
         wt.replace("$SJ", config.schuljahr);
-        wt.replace("$DJZ", config.datumzeugnis);
+        wt.replace("$DJZ", config.templates.jahreszeugnis.datumzeugnis);
 
         Sitzungsleiter sl = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
         if (sl != null) {

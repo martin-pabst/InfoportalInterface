@@ -1,8 +1,8 @@
-package pabstsoftware.klassensitzung;
+package pabstsoftware.jahreszeugnis;
 
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
-import pabstsoftware.klassensitzung.config.Config;
-import pabstsoftware.klassensitzung.config.Credentials;
+import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.config.Credentials;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 

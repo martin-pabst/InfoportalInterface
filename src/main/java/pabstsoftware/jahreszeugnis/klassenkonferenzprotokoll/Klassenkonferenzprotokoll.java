@@ -1,10 +1,10 @@
-package pabstsoftware.klassensitzung.klassenkonferenzprotokoll;
+package pabstsoftware.jahreszeugnis.klassenkonferenzprotokoll;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.model.*;
-import pabstsoftware.klassensitzung.ScheinerKlassensitzung;
-import pabstsoftware.klassensitzung.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
+import pabstsoftware.jahreszeugnis.config.Config;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -194,8 +194,9 @@ public class Klassenkonferenzprotokoll {
 
                     if(fach.getFachEnum() == IPFachEnum.Mu){
                         if(fach.getsG().getValue() > 4.2){
-                            System.out.println(schueler.getFamiliennameRufname() +
-                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue());
+                            System.out.println(schueler.getFamiliennameRufname() + " " +
+                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue()
+                             + klasse.getKlassenteam().getKlassenteamMap().get(fach.getFachEnum()).toString());
                         }
                     }
 
@@ -464,6 +465,12 @@ public class Klassenkonferenzprotokoll {
         wt.replace("$SJ", scheinerKlassensitzung.getConfig().schuljahr);
 
         Sitzungsleiter sl = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
+
+        if(sl == null){
+            Logger logger = LoggerFactory.getLogger(this.getClass());
+            logger.error("Fehler: Habe keinen Sitzungsleiter für die Klasse " + klasse.getName() + " gefunden!");
+        }
+
 
         wt.replace("$DA", sl.getDatum());
         wt.replace("$VO", sl.getVon());

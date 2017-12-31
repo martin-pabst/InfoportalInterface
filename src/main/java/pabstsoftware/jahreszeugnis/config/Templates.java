@@ -1,4 +1,4 @@
-package pabstsoftware.klassensitzung.config;
+package pabstsoftware.jahreszeugnis.config;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;

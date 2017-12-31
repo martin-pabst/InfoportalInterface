@@ -7,7 +7,7 @@ import pabstsoftware.infoportalinterface.model.*;
 import pabstsoftware.infoportalinterface.tools.httpclient.HttpClientInterface;
 import pabstsoftware.infoportalinterface.tools.string.Finder;
 import pabstsoftware.infoportalinterface.tools.string.WordNotFoundException;
-import pabstsoftware.klassensitzung.ScheinerKlassensitzung;
+import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
 
 import java.util.ArrayList;
 import java.util.HashMap;
