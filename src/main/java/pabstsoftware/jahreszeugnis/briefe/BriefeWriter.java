@@ -6,8 +6,8 @@ import pabstsoftware.anschriftliste.ASchueler;
 import pabstsoftware.anschriftliste.Anschriftliste;
 import pabstsoftware.anschriftliste.Briefdaten;
 import pabstsoftware.infoportalinterface.model.*;
-import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
-import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerJahreszeugnisMain;
+import pabstsoftware.config.Config;
 import pabstsoftware.tools.word.RowChanger;
 import pabstsoftware.tools.word.WordTool;
 
@@ -23,13 +23,13 @@ import java.util.List;
  */
 public class BriefeWriter {
 
-    private ScheinerKlassensitzung scheinerKlassensitzung;
+    private ScheinerJahreszeugnisMain scheinerJahreszeugnisMain;
     private IPKlasse klasse;
     private WordTool wt;
     private Anschriftliste anschriftliste;
 
-    public BriefeWriter(ScheinerKlassensitzung scheinerKlassensitzung, IPKlasse klasse) {
-        this.scheinerKlassensitzung = scheinerKlassensitzung;
+    public BriefeWriter(ScheinerJahreszeugnisMain scheinerJahreszeugnisMain, IPKlasse klasse) {
+        this.scheinerJahreszeugnisMain = scheinerJahreszeugnisMain;
         this.klasse = klasse;
     }
 
@@ -39,7 +39,7 @@ public class BriefeWriter {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         logger.info("Schreibe Briefe...");
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
         anschriftliste = new Anschriftliste(config);
 
         for (String briefFilename : config.templates.jahreszeugnis.briefe.briefe) {
@@ -178,7 +178,7 @@ public class BriefeWriter {
           $US: Andrea Fischer, StD
 */
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
 
         wt.replace("$DLK", config.datumlehrerkonferenz);
         wt.replace("$DLS", config.templates.jahreszeugnis.datumklassenlehrersprechstunde);
@@ -187,7 +187,7 @@ public class BriefeWriter {
         wt.replace("$ZNP", config.templates.jahreszeugnis.zeitraumnachpruefung);
         wt.replace("$DJZ", config.templates.jahreszeugnis.datumzeugnis);
 
-        Sitzungsleiter sl = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
+        Sitzungsleiter sl = scheinerJahreszeugnisMain.getSitzungsleiterListe().findByKlassenname(klasse.getName());
         if(sl != null){
             wt.replace("$DKK", sl.getDatum());
         }
@@ -268,7 +268,7 @@ public class BriefeWriter {
             wt.replace("$KK", "Der Klassenleiter/die Klassenleiterin");
         }
 
-        Sitzungsleiter sl1 = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
+        Sitzungsleiter sl1 = scheinerJahreszeugnisMain.getSitzungsleiterListe().findByKlassenname(klasse.getName());
 
         wt.replace("$US", sl1.getSitzungsleiterUnterschriftAlsSchulleitung());
         /*

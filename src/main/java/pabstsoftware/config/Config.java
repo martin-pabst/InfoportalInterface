@@ -1,4 +1,4 @@
-package pabstsoftware.jahreszeugnis.config;
+package pabstsoftware.config;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

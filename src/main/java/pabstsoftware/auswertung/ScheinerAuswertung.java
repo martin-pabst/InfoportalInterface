@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
-import pabstsoftware.jahreszeugnis.InfoPortalInterfaceFactory;
-import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.infoportalinterface.InfoPortalInterfaceFactory;
+import pabstsoftware.config.Config;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -3,8 +3,8 @@ package pabstsoftware.jahreszeugnis.klassenkonferenzprotokoll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.model.*;
-import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
-import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerJahreszeugnisMain;
+import pabstsoftware.config.Config;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class Klassenkonferenzprotokoll {
 
-    private ScheinerKlassensitzung scheinerKlassensitzung;
+    private ScheinerJahreszeugnisMain scheinerJahreszeugnisMain;
     private IPKlasse klasse;
     private WordTool wt;
 
@@ -39,8 +39,8 @@ public class Klassenkonferenzprotokoll {
     private String nichtvorrueckerOutputFilename;
     private CellStyle wrappingCellStyle;
 
-    public Klassenkonferenzprotokoll(ScheinerKlassensitzung scheinerKlassensitzung, IPKlasse klasse) {
-        this.scheinerKlassensitzung = scheinerKlassensitzung;
+    public Klassenkonferenzprotokoll(ScheinerJahreszeugnisMain scheinerJahreszeugnisMain, IPKlasse klasse) {
+        this.scheinerJahreszeugnisMain = scheinerJahreszeugnisMain;
         this.klasse = klasse;
     }
 
@@ -50,7 +50,7 @@ public class Klassenkonferenzprotokoll {
         logger.info("Schreibe Klassenkonferenzprotokolle...");
 
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
 
         /**
          * Word-Template fürs Konferenzprotokoll vorbereiten
@@ -462,9 +462,9 @@ public class Klassenkonferenzprotokoll {
 
     private void schreibeSitzungsleiterDatumUhrzeit() {
 
-        wt.replace("$SJ", scheinerKlassensitzung.getConfig().schuljahr);
+        wt.replace("$SJ", scheinerJahreszeugnisMain.getConfig().schuljahr);
 
-        Sitzungsleiter sl = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
+        Sitzungsleiter sl = scheinerJahreszeugnisMain.getSitzungsleiterListe().findByKlassenname(klasse.getName());
 
         if(sl == null){
             Logger logger = LoggerFactory.getLogger(this.getClass());

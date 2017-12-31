@@ -7,7 +7,7 @@ import pabstsoftware.infoportalinterface.model.*;
 import pabstsoftware.infoportalinterface.tools.httpclient.HttpClientInterface;
 import pabstsoftware.infoportalinterface.tools.string.Finder;
 import pabstsoftware.infoportalinterface.tools.string.WordNotFoundException;
-import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
+import pabstsoftware.jahreszeugnis.ScheinerJahreszeugnisMain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -362,7 +362,7 @@ public class GetKlassenRequest extends BaseRequest {
 				IPKlasse klasse = new IPKlasse(id, klassenName, klassenleitung1, klassenleitung2, klassenleitung3,
 						lehrkraefte);
 
-				if(ScheinerKlassensitzung.holeKlasse(klasse.getName())){
+				if(ScheinerJahreszeugnisMain.holeKlasse(klasse.getName())){
 					klassen.add(klasse);
 				}
 

@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.IPLehrkraft;
 import pabstsoftware.infoportalinterface.model.Sitzungsleiter;
-import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
-import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerJahreszeugnisMain;
+import pabstsoftware.config.Config;
 import pabstsoftware.tools.file.FileTool;
 import pabstsoftware.tools.word.WordTool;
 
@@ -23,12 +23,12 @@ import java.util.List;
  */
 public class MeldelistenWriter {
 
-    private ScheinerKlassensitzung scheinerKlassensitzung;
+    private ScheinerJahreszeugnisMain scheinerJahreszeugnisMain;
     private IPKlasse klasse;
     private WordTool wt;
 
-    public MeldelistenWriter(ScheinerKlassensitzung scheinerKlassensitzung, IPKlasse klasse) {
-        this.scheinerKlassensitzung = scheinerKlassensitzung;
+    public MeldelistenWriter(ScheinerJahreszeugnisMain scheinerJahreszeugnisMain, IPKlasse klasse) {
+        this.scheinerJahreszeugnisMain = scheinerJahreszeugnisMain;
         this.klasse = klasse;
     }
 
@@ -38,7 +38,7 @@ public class MeldelistenWriter {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         logger.info("Schreibe Meldelisten...");
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
 
         String templateDirectory = config.templates.folder + "/" +
                 config.templates.jahreszeugnis.folder + "/Ein_Exemplar_je_Klasse";
@@ -73,7 +73,7 @@ public class MeldelistenWriter {
 
     private void copyMaterialienBesonderePruefung() throws IOException {
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
 
         String templateDirectory = config.templates.folder + "/" +
                 config.templates.jahreszeugnis.folder + "/Material_besondere_Prüfung";
@@ -112,13 +112,13 @@ public class MeldelistenWriter {
           $US: Andrea Fischer, StD
 */
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
 
         wt.replace("$DLK", config.datumlehrerkonferenz);
         wt.replace("$SJ", config.schuljahr);
         wt.replace("$DJZ", config.templates.jahreszeugnis.datumzeugnis);
 
-        Sitzungsleiter sl = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
+        Sitzungsleiter sl = scheinerJahreszeugnisMain.getSitzungsleiterListe().findByKlassenname(klasse.getName());
         if (sl != null) {
             wt.replace("$DKK", sl.getDatum());
         }
@@ -148,7 +148,7 @@ public class MeldelistenWriter {
             wt.replace("$KK", "Der Klassenleiter/die Klassenleiterin");
         }
 
-        Sitzungsleiter sl1 = scheinerKlassensitzung.getSitzungsleiterListe().findByKlassenname(klasse.getName());
+        Sitzungsleiter sl1 = scheinerJahreszeugnisMain.getSitzungsleiterListe().findByKlassenname(klasse.getName());
 
         if(filenameWithoutDocx.contains("Bescheinigung")){
             wt.replace("$US", sl1.getSitzungsleiterUnterschriftAlsSchulleitung());

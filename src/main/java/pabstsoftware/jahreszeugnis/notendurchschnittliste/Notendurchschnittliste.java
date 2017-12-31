@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.IPSchueler;
-import pabstsoftware.jahreszeugnis.ScheinerKlassensitzung;
-import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.jahreszeugnis.ScheinerJahreszeugnisMain;
+import pabstsoftware.config.Config;
 import pabstsoftware.tools.word.RowChanger;
 import pabstsoftware.tools.word.WordTool;
 
@@ -21,12 +21,12 @@ import java.util.Comparator;
  */
 public class Notendurchschnittliste {
 
-    private ScheinerKlassensitzung scheinerKlassensitzung;
+    private ScheinerJahreszeugnisMain scheinerJahreszeugnisMain;
     private IPKlasse klasse;
     private WordTool wt;
 
-    public Notendurchschnittliste(ScheinerKlassensitzung scheinerKlassensitzung, IPKlasse klasse) {
-        this.scheinerKlassensitzung = scheinerKlassensitzung;
+    public Notendurchschnittliste(ScheinerJahreszeugnisMain scheinerJahreszeugnisMain, IPKlasse klasse) {
+        this.scheinerJahreszeugnisMain = scheinerJahreszeugnisMain;
         this.klasse = klasse;
     }
 
@@ -36,7 +36,7 @@ public class Notendurchschnittliste {
         logger.info("Schreibe Listen mit Notendurchschnitten...");
 
 
-        Config config = scheinerKlassensitzung.getConfig();
+        Config config = scheinerJahreszeugnisMain.getConfig();
 
         String templateFilename = config.templates.folder + "/" + config.templates.jahreszeugnis.folder + "/" + config.templates.jahreszeugnis.notendurchschnittliste;
 
@@ -106,7 +106,7 @@ public class Notendurchschnittliste {
 
     private void schreibeSchuljahrKlasse() {
 
-        wt.replace("$SJ", scheinerKlassensitzung.getConfig().schuljahr);
+        wt.replace("$SJ", scheinerJahreszeugnisMain.getConfig().schuljahr);
 
         wt.replace("$KL", klasse.getName());
 

@@ -3,10 +3,11 @@ package pabstsoftware.jahreszeugnis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
+import pabstsoftware.infoportalinterface.InfoPortalInterfaceFactory;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.SitzungsleiterList;
 import pabstsoftware.jahreszeugnis.briefe.BriefeWriter;
-import pabstsoftware.jahreszeugnis.config.Config;
+import pabstsoftware.config.Config;
 import pabstsoftware.jahreszeugnis.klassenkonferenzprotokoll.Klassenkonferenzprotokoll;
 import pabstsoftware.jahreszeugnis.meldelisten.MeldelistenWriter;
 import pabstsoftware.jahreszeugnis.notendurchschnittliste.Notendurchschnittliste;
@@ -20,7 +21,7 @@ import java.net.URISyntaxException;
 /**
  * Created by Martin on 10.04.2017.
  */
-public class ScheinerKlassensitzung {
+public class ScheinerJahreszeugnisMain {
 
     private InfoPortalInterface ip;
 
@@ -53,7 +54,7 @@ public class ScheinerKlassensitzung {
     public static void main(String[] args) {
         try {
 
-            ScheinerKlassensitzung sks = new ScheinerKlassensitzung();
+            ScheinerJahreszeugnisMain sks = new ScheinerJahreszeugnisMain();
 
             sks.fetchInfoportalData();
 
@@ -102,7 +103,7 @@ public class ScheinerKlassensitzung {
 
     }
 
-    public ScheinerKlassensitzung() throws Exception {
+    public ScheinerJahreszeugnisMain() throws Exception {
 
         time = System.currentTimeMillis();
 
