@@ -31,6 +31,43 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
     private int absenzTageGesamt = 0;
     private int absenzStundenGesamt = 0;
+    private boolean sehrGefährdet;
+    private boolean gefährdet;
+    private boolean beiWeiteremAbsinken;
+
+    private ArrayList<IPFach> schlechteNoten = new ArrayList<>();
+
+    public boolean darfWiederholen(){
+
+        int aktuelleJahrgangsstufe = klasse.getJahrgangsstufe();
+
+        // In der Unterstufe darf nur einmal wiederholt werden
+        if(aktuelleJahrgangsstufe <= 7 && hatWiederholungenVonJgstBisJgst(5, 7)){
+            return false;
+        }
+
+        // Dieselbe Jahrgangsstufe oder die nächstfolgende darf nicht wiederholt werden:
+        if(hatWiederholungenVonJgstBisJgst(aktuelleJahrgangsstufe - 1, aktuelleJahrgangsstufe)){
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public boolean hatWiederholungenVonJgstBisJgst(int vonJgst, int bisJgst){
+
+        for (IPWiederholung wh : wiederholungen) {
+            if(wh.getJahrgangsstufe() >= vonJgst && wh.getJahrgangsstufe() <= bisJgst && !wh.isFreiwillig()){
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+
 
     @Override
     public String toString() {
@@ -361,6 +398,40 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
         return s;
 
+    }
+
+    public void setSehrGefährdet(boolean sehrGefährdet) {
+        this.sehrGefährdet = sehrGefährdet;
+    }
+
+    public void setGefährdet(boolean gefährdet) {
+        this.gefährdet = gefährdet;
+    }
+
+    public void setBeiWeiteremAbsinken(boolean beiWeiteremAbsinken) {
+        this.beiWeiteremAbsinken = beiWeiteremAbsinken;
+    }
+
+    public boolean isSehrGefährdet() {
+        return sehrGefährdet;
+    }
+
+    public boolean isGefährdet() {
+        return gefährdet;
+    }
+
+    public boolean isBeiWeiteremAbsinken() {
+        return beiWeiteremAbsinken;
+    }
+
+    public void addSchlechteNoten(ArrayList<IPFach> schlechteNoten) {
+
+        this.schlechteNoten.addAll(schlechteNoten);
+
+    }
+
+    public ArrayList<IPFach> getSchlechteNoten() {
+        return schlechteNoten;
     }
 }
 

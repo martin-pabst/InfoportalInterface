@@ -1,18 +1,15 @@
 package pabstsoftware.auswertung;
 
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pabstsoftware.infoportalinterface.InfoPortalInterface;
-import pabstsoftware.infoportalinterface.model.IPKlasse;
-import pabstsoftware.infoportalinterface.InfoPortalInterfaceFactory;
 import pabstsoftware.config.Config;
+import pabstsoftware.infoportalinterface.InfoPortalInterface;
+import pabstsoftware.infoportalinterface.InfoPortalInterfaceFactory;
+import pabstsoftware.infoportalinterface.Klassenfilter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +21,7 @@ import java.util.HashMap;
 /**
  * Created by Martin on 10.04.2017.
  */
-public class ScheinerAuswertung {
+public class ScheinerAuswertung implements Klassenfilter {
 
     private InfoPortalInterface ip;
 
@@ -43,20 +40,22 @@ public class ScheinerAuswertung {
      * @param name
      * @return
      */
-    public static boolean holeKlasse(String name){
+    public boolean holeKlasse(String name) {
 
 
+        boolean alle = true;
 
-/*
-        if(name.toLowerCase().startsWith("07a")){
+        if (alle) {
+            return true;
+        }
+
+
+        if (name.toLowerCase().startsWith("09a")) {
             return true;
         } else {
             return false;
         }
-*/
 
-
-        return true;
     }
 
     public static void main(String[] args) {
@@ -73,31 +72,33 @@ public class ScheinerAuswertung {
         }
     }
 
-    private void execute() {
+    private void execute() throws IOException {
 
-        for(IPKlasse klasse: ip.getKlassen()){
+        prepareAuswertungWorkbook(config);
 
-            Logger logger = LoggerFactory.getLogger(this.getClass());
-            logger.info("Schreibe die Ausgabedateien für Klasse " + klasse.getName());
-
-            SchuelerNotenListe snl = new SchuelerNotenListe(workbook, this, ip);
-
-
-            try {
-
-                snl.execute();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.info("Schreibe die Schülernotenliste...");
+
+        try {
+
+            SchuelerNotenListe snl = new SchuelerNotenListe(workbook, this, ip);
+            snl.execute();
+
+            Fachproblemliste fpl = new Fachproblemliste(workbook, this, ip);
+            fpl.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        writeAuswertungWorkbook(config);
+
         time = System.currentTimeMillis() - time;
         time /= 1000;
 
-        long min = time/60;
-        long s = time - min*60;
+        long min = time / 60;
+        long s = time - min * 60;
 
         logger.info("Arbeiten abgeschlossen in " + min + " min " + s + " s.");
 
@@ -132,6 +133,7 @@ public class ScheinerAuswertung {
     public void fetchInfoportalData() throws Exception {
 
         ip = InfoPortalInterfaceFactory.getInfoPortalInterface(config);
+        ip.setKlassenfilter(this);
 
         ip.login();
 
@@ -157,17 +159,21 @@ public class ScheinerAuswertung {
 
         CellStyle styleBold = workbook.createCellStyle();
         Font font = workbook.createFont();
-        font.setFontHeightInPoints((short) 15);
+        font.setFontHeightInPoints((short) 11);
         font.setBold(true);
         styleBold.setFont(font);
 
         cellstyles.put("bold", styleBold);
 
 
+        CellStyle percent = workbook.createCellStyle();
+        percent.setDataFormat(workbook.createDataFormat().getFormat("0.0%"));
+        cellstyles.put("percent", percent);
+
         return workbook;
     }
 
-    private void writeAuswertungWorkbook(Config config){
+    private void writeAuswertungWorkbook(Config config) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         String heute = sdf.format(Calendar.getInstance().getTime());
@@ -187,4 +193,6 @@ public class ScheinerAuswertung {
     public Workbook getWorkbook() {
         return workbook;
     }
+
+
 }

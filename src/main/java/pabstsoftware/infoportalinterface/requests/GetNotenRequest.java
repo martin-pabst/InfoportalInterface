@@ -282,7 +282,7 @@ public class GetNotenRequest extends BaseRequest {
 
         String[] whArray = wiederholungText.split("<br />");
 
-        for (int i = 0; i + 1 < whArray.length; i += 2) {
+        for (int i = 0; i < whArray.length; i ++) {
 
             String jgst = whArray[i].replace(". Jgst.", "");
 
@@ -292,7 +292,14 @@ public class GetNotenRequest extends BaseRequest {
 
                 jgstInt = Integer.parseInt(jgst);
 
-                IPWiederholung ipw = new IPWiederholung(jgstInt, whArray[i + 1]);
+                String zusatztext = "";
+
+                if(i + 1 < whArray.length && !whArray[i+1].contains("Jgst.")){
+                    zusatztext = whArray[i+1];
+                    i++;
+                }
+
+                IPWiederholung ipw = new IPWiederholung(jgstInt, zusatztext);
 
                 schueler.addWiederholung(ipw);
 

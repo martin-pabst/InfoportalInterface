@@ -16,4 +16,7 @@ public class Templates {
     @Element
     public Jahreszeugnis jahreszeugnis;
 
+    @Element
+    public Halbjahresbericht halbjahresbericht;
+
 }

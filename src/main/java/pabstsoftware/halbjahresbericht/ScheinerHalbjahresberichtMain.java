@@ -1,19 +1,19 @@
-package pabstsoftware.jahreszeugnis;
+package pabstsoftware.halbjahresbericht;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.config.Config;
+import pabstsoftware.halbjahresbericht.briefe.BriefeWriterHalbjahr;
+import pabstsoftware.halbjahresbericht.konferenzprotokoll.Halbjahreskonferenzprotokoll;
+import pabstsoftware.halbjahresbericht.konferenzprotokoll.WarnungenListe;
+import pabstsoftware.halbjahresbericht.notendurchschnittliste.NotendurchschnittlisteHalbjahr;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
 import pabstsoftware.infoportalinterface.InfoPortalInterfaceFactory;
 import pabstsoftware.infoportalinterface.Klassenfilter;
 import pabstsoftware.infoportalinterface.model.IPKlasse;
 import pabstsoftware.infoportalinterface.model.SitzungsleiterList;
-import pabstsoftware.jahreszeugnis.briefe.BriefeWriter;
-import pabstsoftware.jahreszeugnis.klassenkonferenzprotokoll.Klassenkonferenzprotokoll;
-import pabstsoftware.jahreszeugnis.meldelisten.MeldelistenWriter;
-import pabstsoftware.jahreszeugnis.notendurchschnittliste.Notendurchschnittliste;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 /**
  * Created by Martin on 10.04.2017.
  */
-public class ScheinerJahreszeugnisMain implements Klassenfilter {
+public class ScheinerHalbjahresberichtMain implements Klassenfilter{
 
     private InfoPortalInterface ip;
 
@@ -41,27 +41,31 @@ public class ScheinerJahreszeugnisMain implements Klassenfilter {
     public boolean holeKlasse(String name){
 
 
+        boolean alle = true;
 
-//        if(name.toLowerCase().startsWith("06B")){
-//            return true;
-//        } else {
-//            return false;
-//        }
+        if(alle){
+            return true;
+        }
 
 
-        return true;
+        if(name.toLowerCase().startsWith("09a")){
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public static void main(String[] args) {
         try {
 
-            ScheinerJahreszeugnisMain sks = new ScheinerJahreszeugnisMain();
+            ScheinerHalbjahresberichtMain halbjahresberichtMain = new ScheinerHalbjahresberichtMain();
 
-            sks.fetchInfoportalData();
+            halbjahresberichtMain.fetchInfoportalData();
 
-            sks.fetchSitzungsleiter();
+            halbjahresberichtMain.fetchSitzungsleiter();
 
-            sks.execute();
+            halbjahresberichtMain.execute();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,16 +79,16 @@ public class ScheinerJahreszeugnisMain implements Klassenfilter {
             Logger logger = LoggerFactory.getLogger(this.getClass());
             logger.info("Schreibe die Ausgabedateien für Klasse " + klasse.getName());
 
-            Klassenkonferenzprotokoll kp = new Klassenkonferenzprotokoll(this, klasse);
-            Notendurchschnittliste ndl = new Notendurchschnittliste(this, klasse);
-            BriefeWriter bw = new BriefeWriter(this,klasse);
-            MeldelistenWriter mw = new MeldelistenWriter(this, klasse);
+            Halbjahreskonferenzprotokoll kp = new Halbjahreskonferenzprotokoll(this, klasse);
+            WarnungenListe wl = new WarnungenListe(this, klasse);
+            NotendurchschnittlisteHalbjahr ndl = new NotendurchschnittlisteHalbjahr(this, klasse);
+            BriefeWriterHalbjahr bw = new BriefeWriterHalbjahr(this,klasse);
 
             try {
                 kp.execute(); // muss an erster Stelle stehen, da es die Ausgabeordner löscht
+                wl.execute();
                 ndl.execute();
                 bw.execute();
-                mw.execute();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (URISyntaxException e) {
@@ -104,7 +108,7 @@ public class ScheinerJahreszeugnisMain implements Klassenfilter {
 
     }
 
-    public ScheinerJahreszeugnisMain() throws Exception {
+    public ScheinerHalbjahresberichtMain() throws Exception {
 
         time = System.currentTimeMillis();
 

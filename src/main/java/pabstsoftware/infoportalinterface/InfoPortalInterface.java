@@ -25,6 +25,7 @@ public class InfoPortalInterface {
 	private IPLehrkraftListe lehrkraefte = new IPLehrkraftListe();
 	private IPSchuelerListe schueler = new IPSchuelerListe();
 	private IPKlassenListe klassen = new IPKlassenListe();
+	private Klassenfilter klassenfilter;
 
 	/**
 	 * 
@@ -132,6 +133,14 @@ public class InfoPortalInterface {
 		return klassen;
 	}
 
-	
 
+    public void setKlassenfilter(Klassenfilter klassenfilter) {
+
+		this.klassenfilter = klassenfilter;
+
+	}
+
+	public Klassenfilter getKlassenfilter() {
+		return klassenfilter;
+	}
 }
