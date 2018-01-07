@@ -3,6 +3,7 @@ package pabstsoftware.auswertung;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
 import pabstsoftware.infoportalinterface.model.IPFach;
 import pabstsoftware.infoportalinterface.model.IPFachEnum;
@@ -104,7 +105,18 @@ public class SchuelerNotenListe {
         for(int i = 0; i < colorIndices.length; i++) {
             ConditionalFormattingRule rule1 = sheetCF.createConditionalFormattingRule(ComparisonOperator.BETWEEN, bisNote[i], bisNote[i+1]);
             PatternFormatting fill1 = rule1.createPatternFormatting();
-            fill1.setFillBackgroundColor(colorIndices[i]);
+
+            if(colorIndices[i] != IndexedColors.LIGHT_BLUE.getIndex()){
+                fill1.setFillBackgroundColor(colorIndices[i]);
+            } else {
+                fill1.setFillBackgroundColor(new XSSFColor(new java.awt.Color(180, 180, 255)));
+            }
+
+            if(colorIndices[i] == IndexedColors.RED.getIndex()){
+                rule1.createFontFormatting().setFontStyle(false, true);
+            }
+
+
             fill1.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
 
             String range = "D1" + ":" + CellReference.convertNumToColString(IPFachEnum.values().length + 2)
