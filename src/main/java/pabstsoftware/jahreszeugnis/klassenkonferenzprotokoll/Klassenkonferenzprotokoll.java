@@ -86,6 +86,7 @@ public class Klassenkonferenzprotokoll {
         //close the stream
         output_file.close();
 
+        // Hier wird exit-code 5 geworfen!
         schreibeAbsenzentabelle(outputDir + "/Absenzenliste_" + klasse.getName() + ".xlsx");
 
     }
@@ -192,13 +193,13 @@ public class Klassenkonferenzprotokoll {
 
                 if (fach.getJahreszeugnisNote() != null) {
 
-                    if(fach.getFachEnum() == IPFachEnum.Mu){
-                        if(fach.getsG().getValue() > 4.2){
-                            System.out.println(schueler.getFamiliennameRufname() + " " +
-                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue()
-                             + klasse.getKlassenteam().getKlassenteamMap().get(fach.getFachEnum()).toString());
-                        }
-                    }
+//                    if(fach.getFachEnum() == IPFachEnum.Mu){
+//                        if(fach.getsG().getValue() > 4.2){
+//                            System.out.println(schueler.getFamiliennameRufname() + " " +
+//                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue()
+//                             + klasse.getKlassenteam().getKlassenteamMap().get(fach.getFachEnum()).toString());
+//                        }
+//                    }
 
                     if (fach.getJahreszeugnisNote() == 5) {
                         if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
