@@ -63,7 +63,13 @@ public class SchuelerNotenListe {
 
         }
 
-        for(int i = 0; i < IPFachEnum.values().length + 3; i++){
+        row.createCell(colNum++).setCellValue("Ø");
+
+        colNum++;
+
+        row.createCell(colNum++).setCellValue("D SchA");
+
+        for(int i = 0; i < IPFachEnum.values().length + 6; i++){
             row.getCell(i).setCellStyle(scheinerAuswertung.cellstyles.get("bold"));
         }
 
@@ -84,11 +90,27 @@ public class SchuelerNotenListe {
                     if(fach != null && fach.getsG() != null && fach.getsG().getValue() > 0.01){
                         Cell cell = row.createCell(i++);
                         cell.setCellValue(fach.getsG().getValue());
+                        cell.setCellStyle(scheinerAuswertung.cellstyles.get("bold"));
                     } else {
                         row.createCell(i++).setCellValue("---");
                     }
 
                 }
+
+
+                Cell cell = row.createCell(i++);
+                cell.setCellValue(schueler.getDurchschnittVorrueckungsfaecher2Dez());
+
+                i++;
+
+                IPFach fach = schueler.getFach(IPFachEnum.D);
+                if(fach != null && fach.getDurchschnittGL() != null && fach.getDurchschnittGL().getValue() > 0.01){
+                    cell = row.createCell(i++);
+                    cell.setCellValue(fach.getDurchschnittGL().getValue());
+                } else {
+                    row.createCell(i++);
+                }
+
 
             }
         }
@@ -127,7 +149,7 @@ public class SchuelerNotenListe {
         }
 
 
-        for(int i = 0; i < IPFachEnum.values().length + 3; i++){
+        for(int i = 0; i < IPFachEnum.values().length + 6; i++){
             sheet.autoSizeColumn(i);
         }
 
