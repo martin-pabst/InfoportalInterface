@@ -1,5 +1,6 @@
 package pabstsoftware.infoportalinterface;
 
+import pabstsoftware.config.Config;
 import pabstsoftware.infoportalinterface.model.IPKlassenListe;
 import pabstsoftware.infoportalinterface.model.IPLehrkraftListe;
 import pabstsoftware.infoportalinterface.model.IPSchuelerListe;
@@ -34,7 +35,7 @@ public class InfoPortalInterface {
 	 * @param basePortalURL
 	 */
 
-	public InfoPortalInterface(String username, String password, String basePortalURL) {
+	public InfoPortalInterface(String username, String password, String basePortalURL, Config config) {
 
 		super();
 
@@ -49,7 +50,7 @@ public class InfoPortalInterface {
 
 		this.basePortalURL = basePortalURL;
 
-		httpClient = new ApacheHttpClientWrapper();
+		httpClient = new ApacheHttpClientWrapper(config);
 
 	}
 

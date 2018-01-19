@@ -25,7 +25,7 @@ public class TestInfoPortalInterfaceFactory {
                 Credentials credentials = config.getCredentials();
 
                 ipi = new InfoPortalInterface(credentials.username, credentials.password,
-                      credentials.baseurl);
+                      credentials.baseurl, config);
 
                 return ipi;
 

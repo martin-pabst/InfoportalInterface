@@ -12,6 +12,9 @@ public class Config {
     @Element
     private Credentials credentials;
 
+    @Element(required = false)
+    public Proxy proxy;
+
     @Element
     public Templates templates;
 

@@ -1,5 +1,6 @@
 package pabstsoftware.infoportalinterface.tools.httpclient;
 
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
@@ -20,6 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pabstsoftware.config.Config;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -48,19 +50,19 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
     private HashMap<String, String> lastHeaders = new HashMap<>();
     private int lastStatusCode = 0;
 
-    public ApacheHttpClientWrapper(CookieStore cookieStore) {
+//    public ApacheHttpClientWrapper(CookieStore cookieStore) {
 
-        requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
-        context = HttpClientContext.create();
-        context.setCookieStore(cookieStore);
-        httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
-                .setRedirectStrategy(new LaxRedirectStrategy()).build();
+//        requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+//        context = HttpClientContext.create();
+//        context.setCookieStore(cookieStore);
+//        httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).setDefaultCookieStore(cookieStore)
+//                .setRedirectStrategy(new LaxRedirectStrategy()).build();
 
-        System.setProperty("jsse.enableSNIExtension", "false");
+//        System.setProperty("jsse.enableSNIExtension", "false");
 
-    }
+//    }
 
-    public ApacheHttpClientWrapper() {
+    public ApacheHttpClientWrapper(Config config) {
 
         // PoolingHttpClientConnectionManager cm;
         //
@@ -79,7 +81,15 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
             e.printStackTrace();
         }
 
-        requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
+        if(config != null && config.proxy != null) {
+
+            HttpHost proxy = new HttpHost("proxy.csg.ingolstadt.de", 8000, "http");
+            requestConfig = RequestConfig.custom().setProxy(proxy).setCookieSpec(CookieSpecs.DEFAULT).build();
+        } else {
+            requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
+        }
+
+
         cookieStore = new BasicCookieStore();
         context = HttpClientContext.create();
         context.setCookieStore(cookieStore);
@@ -274,7 +284,7 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
             cs.addCookie(c);
         }
 
-        ApacheHttpClientWrapper httpClient = new ApacheHttpClientWrapper(cs);
+        ApacheHttpClientWrapper httpClient = new ApacheHttpClientWrapper(null);
         // httpClient.context.setCookieStore(context.getCookieStore());
 
         return httpClient;
