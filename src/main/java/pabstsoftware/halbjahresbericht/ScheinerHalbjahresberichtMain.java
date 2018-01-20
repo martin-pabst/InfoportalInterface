@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pabstsoftware.config.Config;
 import pabstsoftware.halbjahresbericht.briefe.BriefeWriterHalbjahr;
+import pabstsoftware.halbjahresbericht.briefevorschlagliste.BriefeVorschlagListe;
 import pabstsoftware.halbjahresbericht.konferenzprotokoll.Halbjahreskonferenzprotokoll;
 import pabstsoftware.halbjahresbericht.konferenzprotokoll.WarnungenListe;
 import pabstsoftware.halbjahresbericht.notendurchschnittliste.NotendurchschnittlisteHalbjahr;
@@ -83,12 +84,14 @@ public class ScheinerHalbjahresberichtMain implements Klassenfilter{
             WarnungenListe wl = new WarnungenListe(this, klasse);
             NotendurchschnittlisteHalbjahr ndl = new NotendurchschnittlisteHalbjahr(this, klasse);
             BriefeWriterHalbjahr bw = new BriefeWriterHalbjahr(this,klasse);
+            BriefeVorschlagListe bvl = new BriefeVorschlagListe(this, klasse);
 
             try {
                 kp.execute(); // muss an erster Stelle stehen, da es die Ausgabeordner löscht
                 wl.execute();
-                ndl.execute();
+                //ndl.execute();
                 bw.execute();
+                bvl.execute();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (URISyntaxException e) {

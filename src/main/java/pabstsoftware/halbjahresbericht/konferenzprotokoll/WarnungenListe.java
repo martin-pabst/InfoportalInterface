@@ -103,14 +103,6 @@ public class WarnungenListe {
 
                 if (fach.getsG() != null) {
 
-//                    if(fach.getFachEnum() == IPFachEnum.Mu){
-//                        if(fach.getsG().getValue() > 4.2){
-//                            System.out.println(schueler.getFamiliennameRufname() + " " +
-//                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue()
-//                             + klasse.getKlassenteam().getKlassenteamMap().get(fach.getFachEnum()).toString());
-//                        }
-//                    }
-
                     if (fach.getsG().getValue() >= 4.51 && fach.getsG().getValue() < 5.5) {
                         if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
                             anzahl5erInVorrueckungsfaechern++;

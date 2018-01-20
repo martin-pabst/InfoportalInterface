@@ -1,7 +1,6 @@
 package pabstsoftware.halbjahresbericht.konferenzprotokoll;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,21 +19,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 /**
  * Created by Martin on 10.04.2017.
  */
 public class Halbjahreskonferenzprotokoll {
 
-    private ScheinerHalbjahresberichtMain halbjahresberichtMain;
-    private IPKlasse klasse;
-    private WordTool wt;
 
-    private XSSFWorkbook workbook;
-    private XSSFSheet sheet;
-    private String nichtvorrueckerOutputFilename;
-    private CellStyle wrappingCellStyle;
+    private WordTool wt;    private ScheinerHalbjahresberichtMain halbjahresberichtMain;
+    private IPKlasse klasse;
+
     private String outputDir;
 
 
@@ -69,8 +63,6 @@ public class Halbjahreskonferenzprotokoll {
 
         schreibeAbsenzen();
 
-        schreibeEmpfehlungen();
-
         wt.write();
 
         schreibeAbsenzentabelle(outputDir + "/Absenzenliste_" + klasse.getName() + ".xlsx");
@@ -92,128 +84,6 @@ public class Halbjahreskonferenzprotokoll {
     }
 
 
-    private void schreibeEmpfehlungen() {
-
-        int fallNr = 1;
-
-        for (IPSchueler schueler : klasse.getSchuelerList()) {
-
-            ArrayList<IPFach> note5oder6 = new ArrayList<>();
-            ArrayList<IPFach> knappe4er = new ArrayList<>();
-
-            int anzahl5erInVorrueckungsfaechern = 0;
-            int anzahl6erInVorrueckungsfaechern = 0;
-
-            for (IPFach fach : schueler.getFaecher()) {
-
-                if (fach.getsG() != null) {
-
-//                    if(fach.getFachEnum() == IPFachEnum.Mu){
-//                        if(fach.getsG().getValue() > 4.2){
-//                            System.out.println(schueler.getFamiliennameRufname() + " " +
-//                                    fach.getFachEnum().getAnzeigeform() + ": " + fach.getsG().getValue()
-//                             + klasse.getKlassenteam().getKlassenteamMap().get(fach.getFachEnum()).toString());
-//                        }
-//                    }
-
-                    if (fach.getsG().getValue() >= 4.51 && fach.getsG().getValue() < 5.5) {
-                        if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
-                            anzahl5erInVorrueckungsfaechern++;
-                        }
-                        note5oder6.add(fach);
-                    }
-
-                    if (fach.getsG().getValue() >= 5.5) {
-                        if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
-                            anzahl6erInVorrueckungsfaechern++;
-                        }
-                        note5oder6.add(fach);
-                    }
-
-                    if(fach.getsG().getValue() < 4.51 && fach.getsG().getValue() >= 4.3){
-                        knappe4er.add(fach);
-                    }
-
-                }
-
-            }
-
-            boolean sehrGefährdet = (anzahl6erInVorrueckungsfaechern > 0 || anzahl5erInVorrueckungsfaechern >= 2);
-            boolean gefährdet = !sehrGefährdet && (anzahl5erInVorrueckungsfaechern >= 1 || knappe4er.size() >= 3);
-            boolean beiWeiteremAbsinken = !sehrGefährdet && !gefährdet && (knappe4er.size() >= 2);
-
-            schueler.setSehrGefährdet(sehrGefährdet);
-            schueler.setGefährdet(gefährdet);
-            schueler.setBeiWeiteremAbsinken(beiWeiteremAbsinken);
-
-            if(sehrGefährdet || gefährdet || beiWeiteremAbsinken){
-
-                RowChanger rc = wt.getRowChanger("$Y");
-
-
-                rc.set("$Y", "" + fallNr);
-                rc.set("$XN", schueler.getFamiliennameRufname());
-
-                rc.set("$SG", sehrGefährdet ? "X" : "");
-                rc.set("$G", gefährdet ? "X" : "");
-                rc.set("$BW", beiWeiteremAbsinken ? "X" : "");
-
-                Collections.sort(note5oder6);
-                Collections.sort(knappe4er);
-
-                schueler.addSchlechteNoten(note5oder6);
-                schueler.addSchlechteNoten(knappe4er);
-
-
-                String note5oder6Text = getNotentext(note5oder6);
-                String knappe4erText = getNotentext(knappe4er);
-
-                rc.set("$X56", note5oder6Text);
-                rc.set("$X4", knappe4erText);
-
-                rc.set("$AG1", schueler.darfWiederholen() ? "" : "X");
-                rc.set("$AG2", schueler.getWiederholungen().size() < 2 ? "" : "X");
-
-                fallNr++;
-
-            }
-
-        }
-
-        if(fallNr == 1){
-
-            RowChanger rc = wt.getRowChanger("$Y");
-
-            rc.set("$Y", "---");
-            rc.set("$XN", "---");
-            rc.set("$X56", "---");
-            rc.set("$X4", "---");
-
-            rc.set("$PM", "---");
-            rc.set("$TD", "---");
-            rc.set("$JN", "---");
-            rc.set("$KL", "---");
-
-        }
-
-
-
-    }
-
-    private void setCellValue(Row row, int cellnum, String value) {
-
-        Cell cell = row.getCell(cellnum);
-        cell.setCellValue(value);
-        cell.setCellStyle(wrappingCellStyle);
-
-    }
-
-    private String getNotentext(ArrayList<IPFach> faecher) {
-
-        return faecher.stream().map(fach -> fach.getFachEnum().getKurzform() + "(" + fach.getsG() + ")")
-                .collect(Collectors.joining(", "));
-
-    }
 
     private void schreibeAbsenzentabelle(String filename) {
         Workbook wb = new XSSFWorkbook();
