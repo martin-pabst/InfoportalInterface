@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -61,10 +60,6 @@ public class WarnungenListe {
         Collections.sort(klasse.getSchuelerList());
 
         schreibeSitzungsleiterDatumUhrzeit();
-
-        schreibeLehrerDerKlasse();
-
-        schreibeAbsenzen();
 
         schreibeEmpfehlungen();
 
@@ -126,8 +121,8 @@ public class WarnungenListe {
             }
 
             boolean sehrGefährdet = (anzahl6erInVorrueckungsfaechern > 0 || anzahl5erInVorrueckungsfaechern >= 2);
-            boolean gefährdet = !sehrGefährdet && (anzahl5erInVorrueckungsfaechern >= 1 || knappe4er.size() >= 3);
-            boolean beiWeiteremAbsinken = !sehrGefährdet && !gefährdet && (knappe4er.size() >= 2);
+            boolean gefährdet = !sehrGefährdet && (anzahl5erInVorrueckungsfaechern >= 1 || knappe4er.size() >= 1);
+            boolean beiWeiteremAbsinken = !sehrGefährdet && !gefährdet && (knappe4er.size() >= 1);
 
             schueler.setSehrGefährdet(sehrGefährdet);
             schueler.setGefährdet(gefährdet);
@@ -273,74 +268,6 @@ public class WarnungenListe {
         c.setCellStyle(style);
     }
 
-    private void schreibeAbsenzen() {
-
-        ArrayList<IPSchueler> laengereErkrankungen = new ArrayList<>(); // Schüler mit mindestens einem Fehlintervall > 10 Tage
-        ArrayList<IPSchueler> haeufigeVersaeumnisse = new ArrayList<>(); // Schüler mit mehr als 10 Tagen insgesamt
-
-
-        for (IPSchueler schueler : klasse.getSchuelerList()) {
-
-            int tage = 0;
-            int stundenweise = 0;
-
-            boolean laengereErkrankung = false;
-
-            for (IPAbsenz absenz : schueler.getAbsenzen()) {
-
-                tage += absenz.getTage();
-
-                if (absenz.getStunden() > 0) {
-                    stundenweise++;
-                }
-
-                if (absenz.getTage() > 10) {
-                    laengereErkrankung = true;
-                }
-
-            }
-
-            schueler.setAbsenzStundenGesamt(stundenweise);
-            schueler.setAbsenzTageGesamt(tage);
-
-            if (laengereErkrankung) {
-                laengereErkrankungen.add(schueler);
-            } else {
-                if (tage + stundenweise / 2 > 5) {
-                    haeufigeVersaeumnisse.add(schueler);
-                }
-            }
-
-        }
-
-        Collections.sort(laengereErkrankungen);
-        Collections.sort(haeufigeVersaeumnisse);
-
-        for (IPSchueler schueler : laengereErkrankungen) {
-            RowChanger rc = wt.getRowChanger("$EN");
-            rc.set("$EN", schueler.getFamiliennameRufname());
-            rc.set("$ET", "" + schueler.getAbsenzTageGesamt() + " Tage und " + schueler.getAbsenzStundenGesamt() + "-mal stundenweise");
-        }
-
-        if (laengereErkrankungen.size() == 0) {
-            RowChanger rc = wt.getRowChanger("$EN");
-            rc.set("$EN", "---");
-            rc.set("$ET", "---");
-        }
-
-        for (IPSchueler schueler : haeufigeVersaeumnisse) {
-            RowChanger rc = wt.getRowChanger("$HN");
-            rc.set("$HN", schueler.getFamiliennameRufname());
-            rc.set("$HT", "" + schueler.getAbsenzTageGesamt() + " Tage und " + schueler.getAbsenzStundenGesamt() + "-mal stundenweise");
-        }
-
-        if (haeufigeVersaeumnisse.size() == 0) {
-            RowChanger rc = wt.getRowChanger("$HN");
-            rc.set("$HN", "---");
-            rc.set("$HT", "---");
-        }
-
-    }
 
 
     private void schreibeSitzungsleiterDatumUhrzeit() {
@@ -398,58 +325,6 @@ public class WarnungenListe {
 
     }
 
-    private void schreibeLehrerDerKlasse() {
-
-        IPKlassenteam klassenteam = klasse.getKlassenteam();
-
-        ArrayList<LehrkraftImFach> lehrkraftImFachListe = new ArrayList<>();
-        HashMap<IPLehrkraft, LehrkraftImFach> lehrkraftMap = new HashMap<>();
-
-        klassenteam.getKlassenteamMap().forEach((ipFach, lehrkraefte) -> {
-
-            for (IPLehrkraft lehrkraft : lehrkraefte) {
-
-                boolean stimmberechtigt = !(lehrkraefte.size() > 1 && lehrkraft.getStundenplan_id().length() == 4);
-
-                LehrkraftImFach lkImFach = lehrkraftMap.get(lehrkraft);
-
-                if (lkImFach == null) {
-
-                    lkImFach = new LehrkraftImFach(lehrkraft, stimmberechtigt);
-                    lehrkraftImFachListe.add(lkImFach);
-                    lehrkraftMap.put(lehrkraft, lkImFach);
-
-                }
-
-                lkImFach.addFach(ipFach);
-
-            }
-
-        });
-
-        lehrkraftImFachListe.forEach(lkf -> lkf.bereinigeSport());
-
-        Collections.sort(lehrkraftImFachListe);
-
-        for (int i = 0; i < lehrkraftImFachListe.size(); i += 2) {
-
-            RowChanger rc = wt.getRowChanger("$L1");
-            LehrkraftImFach lkLinkeSeite = lehrkraftImFachListe.get(i);
-            rc.set("$L1", "" + (i + 1) + ". " + lkLinkeSeite.getLkListeName());
-
-            if (i + 1 < lehrkraftImFachListe.size()) {
-
-                LehrkraftImFach lkRechteSeite = lehrkraftImFachListe.get(i + 1);
-                rc.set("$L2", "" + (i + 2) + ". " + lkRechteSeite.getLkListeName());
-
-            } else {
-                rc.set("$L2", "");
-            }
-
-        }
-
-
-    }
 
 
 }

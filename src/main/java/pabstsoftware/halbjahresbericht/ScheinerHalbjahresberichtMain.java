@@ -42,7 +42,7 @@ public class ScheinerHalbjahresberichtMain implements Klassenfilter{
     public boolean holeKlasse(String name){
 
 
-        boolean alle = true;
+        boolean alle = false;
 
         if(alle){
             return true;
