@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class BriefeVorschlagListe {
+public class Notenübersicht {
 
 
     private ScheinerHalbjahresberichtMain halbjahresberichtMain;
@@ -44,7 +44,7 @@ public class BriefeVorschlagListe {
     };
 
 
-    public BriefeVorschlagListe(ScheinerHalbjahresberichtMain halbjahresberichtMain, IPKlasse klasse) {
+    public Notenübersicht(ScheinerHalbjahresberichtMain halbjahresberichtMain, IPKlasse klasse) {
 
         this.halbjahresberichtMain = halbjahresberichtMain;
         this.klasse = klasse;
@@ -105,15 +105,17 @@ public class BriefeVorschlagListe {
 
         colNum++;
 
+/*
         row.createCell(colNum++).setCellValue("Brief (X)");
         row.createCell(colNum++).setCellValue("Gefährdung\n(bwa/g/sg)");
         row.createCell(colNum++).setCellValue("Darf wiederholen\n(j/n)");
         row.createCell(colNum++).setCellValue("Gespräch empfohlen\n(Sz/Kl/FLxy)");
         row.createCell(colNum++).setCellValue("konzentrierte\nArbeitsweise");
         row.createCell(colNum++).setCellValue("gesteigerter\nArbeitseinsatz");
+*/
 
 
-        for (int i = 0; i < IPFachEnum.values().length + 11; i++) {
+        for (int i = 0; i < IPFachEnum.values().length + 5; i++) {
             row.getCell(i).setCellStyle(cellstyles.get("bold"));
         }
 
@@ -146,6 +148,7 @@ public class BriefeVorschlagListe {
 
             i++;
 
+/*
             String brief = (schueler.isBeiWeiteremAbsinken() || schueler.isGefährdet() || schueler.isSehrGefährdet()) ? "X" : "";
             row.createCell(i++).setCellValue(brief);
 
@@ -178,6 +181,7 @@ public class BriefeVorschlagListe {
             }
 
             row.createCell(i++).setCellValue(fachlehrer);
+*/
 
 
         }
@@ -216,7 +220,7 @@ public class BriefeVorschlagListe {
         }
 
 
-        for (int i = 0; i < IPFachEnum.values().length + 11; i++) {
+        for (int i = 0; i < IPFachEnum.values().length + 5; i++) {
             sheet.autoSizeColumn(i);
         }
 
@@ -251,7 +255,7 @@ public class BriefeVorschlagListe {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         String heute = sdf.format(Calendar.getInstance().getTime());
 
-        String filename = outputDir + "/Briefvorschläge_" + klasse.getName() + ".xlsx";
+        String filename = outputDir + "/Notenübersicht_" + klasse.getName() + ".xlsx";
 
         try {
 

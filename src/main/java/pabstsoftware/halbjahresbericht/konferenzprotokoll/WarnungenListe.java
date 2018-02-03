@@ -156,6 +156,20 @@ public class WarnungenListe {
                 rc.set("$AG1", schueler.darfWiederholen() ? "" : "X");
                 rc.set("$AG2", schueler.getWiederholungen().size() < 2 ? "" : "X");
 
+                String fachlehrer = "";
+                for (IPFach ipFach : schueler.getFaecher()) {
+                    if(ipFach.getsG() != null && ipFach.getsG().getValue() > 4.3){
+                        fachlehrer += ipFach.getFachEnum().getKurzform() + ", ";
+                    }
+                }
+
+                if(fachlehrer.endsWith(", ")){
+                    fachlehrer = fachlehrer.substring(0, fachlehrer.length() - 2);
+                    fachlehrer = "FL(" + fachlehrer + ")";
+                }
+
+                rc.set("$FL", fachlehrer);
+
                 fallNr++;
 
             }
