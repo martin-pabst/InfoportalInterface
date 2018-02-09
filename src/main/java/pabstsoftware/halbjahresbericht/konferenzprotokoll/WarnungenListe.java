@@ -98,14 +98,14 @@ public class WarnungenListe {
 
                 if (fach.getsG() != null) {
 
-                    if (fach.getsG().getValue() >= 4.51 && fach.getsG().getValue() < 5.5) {
+                    if (fach.getsG().getValue() >= 4.51 && fach.getsG().getValue() <= 5.51001) {
                         if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
                             anzahl5erInVorrueckungsfaechern++;
                         }
                         note5oder6.add(fach);
                     }
 
-                    if (fach.getsG().getValue() >= 5.5) {
+                    if (fach.getsG().getValue() > 5.51) {
                         if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())) {
                             anzahl6erInVorrueckungsfaechern++;
                         }
@@ -121,8 +121,8 @@ public class WarnungenListe {
             }
 
             boolean sehrGefährdet = (anzahl6erInVorrueckungsfaechern > 0 || anzahl5erInVorrueckungsfaechern >= 2);
-            boolean gefährdet = !sehrGefährdet && (anzahl5erInVorrueckungsfaechern >= 1 || knappe4er.size() >= 1);
-            boolean beiWeiteremAbsinken = !sehrGefährdet && !gefährdet && (knappe4er.size() >= 1);
+            boolean gefährdet = !sehrGefährdet && (anzahl5erInVorrueckungsfaechern >= 1 && knappe4er.size() >= 1);
+            boolean beiWeiteremAbsinken = !sehrGefährdet && !gefährdet && (knappe4er.size() + anzahl5erInVorrueckungsfaechern >= 2);
 
             schueler.setSehrGefährdet(sehrGefährdet);
             schueler.setGefährdet(gefährdet);

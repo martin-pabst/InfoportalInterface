@@ -97,28 +97,32 @@ public class GetSchuelerAbsenzenRequest extends BaseRequest {
         finder.jumpTo("<tr").skipFoundWord().jumpTo("<tr").skipFoundWord();
 
         while (finder.find("<tr")) {
+
             String visibleLine = finder.getXMLText("tr");
 
-            Finder finderVisibleLine = new Finder(visibleLine);
+            if (!visibleLine.contains("Schüler") && !visibleLine.contains("Art der Absenz")) {
+                Finder finderVisibleLine = new Finder(visibleLine);
 
-            String familienname = finderVisibleLine.getXMLText("a");
-            String rufname = finderVisibleLine.getXMLText("span");
-            int spacePosition = rufname.indexOf(" ");
+                String familienname = finderVisibleLine.getXMLText("a");
+                String rufname = finderVisibleLine.getXMLText("span");
+                int spacePosition = rufname.indexOf(" ");
 
-            if (spacePosition > 0) {
-                rufname = rufname.substring(0, spacePosition);
-            }
+                if (spacePosition > 0) {
+                    rufname = rufname.substring(0, spacePosition);
+                }
 
-            finder.jumpTo("<tr").markBegin().skipNext("</table").skipNext("</table").skipNext("</tr>").markEnd();
+                finder.jumpTo("<tr").markBegin().skipNext("</table").skipNext("</table").skipNext("</tr>").markEnd();
 
-            String invisibleLine = finder.getMarkedText();
+                String invisibleLine = finder.getMarkedText();
 
-            Finder finderInvisibleLine = new Finder(invisibleLine);
+                Finder finderInvisibleLine = new Finder(invisibleLine);
 
-            IPSchueler schueler = klasse.findSchueler(rufname, familienname);
+                IPSchueler schueler = klasse.findSchueler(rufname, familienname);
 
-            if (schueler != null) {
-                fetchAbsenzenLine(finderInvisibleLine, schueler);
+                if (schueler != null) {
+                    fetchAbsenzenLine(finderInvisibleLine, schueler);
+                }
+
             }
 
         }

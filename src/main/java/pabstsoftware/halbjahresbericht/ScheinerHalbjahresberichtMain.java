@@ -49,7 +49,7 @@ public class ScheinerHalbjahresberichtMain implements Klassenfilter{
         }
 
 
-        if(name.toLowerCase().startsWith("09a")){
+        if(name.toLowerCase().startsWith("08d")){
             return true;
         } else {
             return false;
