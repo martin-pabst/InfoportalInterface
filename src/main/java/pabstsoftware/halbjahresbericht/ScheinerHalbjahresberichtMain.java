@@ -42,14 +42,14 @@ public class ScheinerHalbjahresberichtMain implements Klassenfilter{
     public boolean holeKlasse(String name){
 
 
-        boolean alle = true;
+        boolean alle = false;
 
         if(alle){
             return true;
         }
 
 
-        if(name.toLowerCase().startsWith("08d")){
+        if(name.toLowerCase().startsWith("07c")){
             return true;
         } else {
             return false;
