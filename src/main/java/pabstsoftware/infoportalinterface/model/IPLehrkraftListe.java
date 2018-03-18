@@ -8,15 +8,26 @@ public class IPLehrkraftListe extends ArrayList<IPLehrkraft> {
 
 		rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.replace(" &nbsp;", " ");
 		rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.replace("&nbsp;", " ");
-		
+
+		rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.replace("Diplom-Biologin", "");
+		rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.replace("Dr.", "");
+		rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.replace("  ", " ");
+
+		rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.replace("2", "");
+        rufnameLeerzeichenFamilienname = rufnameLeerzeichenFamilienname.trim();
+
 		for (IPLehrkraft lehrkraft : this) {
 			String rlf = lehrkraft.getRufname() + " " + lehrkraft.getFamilienname();
+
+			boolean übereinstimmung = rlf.equals(rufnameLeerzeichenFamilienname);
 
 			if(lehrkraft.getAkadGrad() != null && !lehrkraft.getAkadGrad().isEmpty()){
 				rlf = lehrkraft.getAkadGrad() + " " + rlf;
 			}
 
-			if (rlf.equals(rufnameLeerzeichenFamilienname)) {
+			übereinstimmung =  übereinstimmung || rlf.equalsIgnoreCase(rufnameLeerzeichenFamilienname);
+
+			if (übereinstimmung) {
 				return lehrkraft;
 			}
 		}

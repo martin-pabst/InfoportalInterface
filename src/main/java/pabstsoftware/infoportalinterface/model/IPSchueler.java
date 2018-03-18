@@ -37,17 +37,17 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
     private ArrayList<IPFach> schlechteNoten = new ArrayList<>();
 
-    public boolean darfWiederholen(){
+    public boolean darfWiederholen() {
 
         int aktuelleJahrgangsstufe = klasse.getJahrgangsstufe();
 
         // In der Unterstufe darf nur einmal wiederholt werden
-        if(aktuelleJahrgangsstufe <= 7 && hatWiederholungenVonJgstBisJgst(5, 7)){
+        if (aktuelleJahrgangsstufe <= 7 && hatWiederholungenVonJgstBisJgst(5, 7)) {
             return false;
         }
 
         // Dieselbe Jahrgangsstufe oder die nächstfolgende darf nicht wiederholt werden:
-        if(hatWiederholungenVonJgstBisJgst(aktuelleJahrgangsstufe - 1, aktuelleJahrgangsstufe)){
+        if (hatWiederholungenVonJgstBisJgst(aktuelleJahrgangsstufe - 1, aktuelleJahrgangsstufe)) {
             return false;
         }
 
@@ -55,10 +55,10 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
     }
 
-    public boolean hatWiederholungenVonJgstBisJgst(int vonJgst, int bisJgst){
+    public boolean hatWiederholungenVonJgstBisJgst(int vonJgst, int bisJgst) {
 
         for (IPWiederholung wh : wiederholungen) {
-            if(wh.getJahrgangsstufe() >= vonJgst && wh.getJahrgangsstufe() <= bisJgst && !wh.isFreiwillig()){
+            if (wh.getJahrgangsstufe() >= vonJgst && wh.getJahrgangsstufe() <= bisJgst && !wh.isFreiwillig()) {
                 return true;
             }
         }
@@ -66,7 +66,6 @@ public class IPSchueler implements Comparable<IPSchueler> {
         return false;
 
     }
-
 
 
     @Override
@@ -180,9 +179,31 @@ public class IPSchueler implements Comparable<IPSchueler> {
             return false;
         }
 
-        return rufname.equalsIgnoreCase(this.rufname) && familienname.equalsIgnoreCase(this.familienname);
+
+        return rufname.equalsIgnoreCase(this.rufname) &&
+                stripFamilienname(familienname).equalsIgnoreCase(stripFamilienname(this.familienname));
 
     }
+
+    public String stripFamilienname(String name) {
+        String[] adelstitel = new String[]{
+                "Edler", "von", "de", "auf", "Freiherr", "Prinz", "zu", "Rohrbach"
+        };
+
+        for (String titel : adelstitel) {
+            int i = name.indexOf(titel);
+            if (i > -1 && (i == 0 || name.charAt(i - 1) == ' ')) {
+                if (name.length() == i + titel.length() || name.charAt(i + titel.length()) == ' ') {
+                    name = name.substring(0, i) + name.substring(i + titel.length());
+                    if (i > 0 && i < name.length() && name.charAt(i) == ' ') {
+                        name = name.substring(0, i) + name.substring(i + 1);
+                    }
+                }
+            }
+        }
+        return name.trim();
+    }
+
 
     public void addWiederholung(IPWiederholung ipw) {
 
@@ -263,7 +284,7 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
         double durchschnitt = getDurchschnittVorrueckungsfaecher();
 
-        if(durchschnitt < 0.001) {
+        if (durchschnitt < 0.001) {
             return "---";
         } else {
 
@@ -279,15 +300,15 @@ public class IPSchueler implements Comparable<IPSchueler> {
         double notensumme = 0;
         int anzahl = 0;
 
-        for(IPFach fach: faecher){
-            if(fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())
-                    && fach.getJahreszeugnisNote() != null && fach.getJahreszeugnisNote() > 0 ){
+        for (IPFach fach : faecher) {
+            if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())
+                    && fach.getJahreszeugnisNote() != null && fach.getJahreszeugnisNote() > 0) {
                 anzahl++;
                 notensumme += fach.getJahreszeugnisNote();
             }
         }
 
-        if(anzahl > 0){
+        if (anzahl > 0) {
 
             return notensumme / anzahl;
 
@@ -324,23 +345,23 @@ public class IPSchueler implements Comparable<IPSchueler> {
         int monatHeute = cal.get(Calendar.MONTH) + 1;
         int jahrHeute = cal.get(Calendar.YEAR);
 
-        if(jahrHeute - jahr > 18){
+        if (jahrHeute - jahr > 18) {
             return true;
         }
 
-        if(jahrHeute - jahr < 18){
+        if (jahrHeute - jahr < 18) {
             return false;
         }
 
-        if(monatHeute > monat){
+        if (monatHeute > monat) {
             return true;
         }
 
-        if(monatHeute < monat){
+        if (monatHeute < monat) {
             return false;
         }
 
-        if(tagHeute >= tag){
+        if (tagHeute >= tag) {
             return true;
         }
 
@@ -348,19 +369,19 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
     }
 
-    private Integer secureInt(String s){
+    private Integer secureInt(String s) {
 
-        if(s == null || s.isEmpty()){
+        if (s == null || s.isEmpty()) {
             return null;
         }
 
-        while(s.startsWith("0")){
+        while (s.startsWith("0")) {
             s = s.substring(1);
         }
 
-        try{
+        try {
             return Integer.parseInt(s);
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return null;
         }
 
@@ -373,9 +394,9 @@ public class IPSchueler implements Comparable<IPSchueler> {
         double notensumme = 0;
         int anzahl = 0;
 
-        for(IPFach fach: faecher){
-            if(fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe()) && fach.getJahreszeugnisNote() != null
-                    && fach.getJahreszeugnisNote() > 0 ){
+        for (IPFach fach : faecher) {
+            if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe()) && fach.getJahreszeugnisNote() != null
+                    && fach.getJahreszeugnisNote() > 0) {
                 anzahl++;
                 notensumme += fach.getJahreszeugnisNote();
                 s += fach.getFachEnum().getKurzform() + " (" + fach.getJahreszeugnisNote() + "), ";
@@ -384,7 +405,7 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
         double durchschnitt = 0;
 
-        if(anzahl > 0){
+        if (anzahl > 0) {
 
             durchschnitt = notensumme / anzahl;
 
@@ -393,7 +414,7 @@ public class IPSchueler implements Comparable<IPSchueler> {
         }
 
         DecimalFormat df = new DecimalFormat("#.00");
-        s += " => "  + df.format(durchschnitt).replace(".", ",");
+        s += " => " + df.format(durchschnitt).replace(".", ",");
 
 
         return s;
