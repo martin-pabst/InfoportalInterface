@@ -19,7 +19,7 @@ public class LoginRequest extends BaseRequest {
 		
 		httpClient.addParameter("user", infoPortalInterface.getUsername());
 		httpClient.addParameter("password", infoPortalInterface.getPassword());
-		httpClient.addParameter("signoff", "0");
+//		httpClient.addParameter("signoff", "0");
 		
 		response = httpClient.post(getBasePortalURL() + "schule_portal/project/auth/login.php");
 		
