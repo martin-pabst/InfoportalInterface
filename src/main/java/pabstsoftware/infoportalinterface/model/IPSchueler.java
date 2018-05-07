@@ -13,6 +13,8 @@ public class IPSchueler implements Comparable<IPSchueler> {
     private IPKlasse klasse;
     private boolean isMaennlich;
 
+    private ArrayList<IPEinzelnote> einzelnoten = new ArrayList<>();
+
     private ArrayList<IPErziehungsberechtigter> erziehungsberechtigte = new ArrayList<>();
 
     private ArrayList<String> fremdsprachen = new ArrayList<>();
@@ -36,6 +38,10 @@ public class IPSchueler implements Comparable<IPSchueler> {
     private boolean beiWeiteremAbsinken;
 
     private ArrayList<IPFach> schlechteNoten = new ArrayList<>();
+
+    public ArrayList<IPEinzelnote> getEinzelnoten() {
+        return einzelnoten;
+    }
 
     public boolean darfWiederholen() {
 
@@ -90,6 +96,12 @@ public class IPSchueler implements Comparable<IPSchueler> {
             out += "[" + fach.toString() + " | " + "]";
         }
 
+        if(einzelnoten.size() > 0){
+            out += "\nNoten: ";
+            for (IPEinzelnote einzelnote : einzelnoten) {
+                out += einzelnote.toString() + "; ";
+            }
+        }
 
         return out;
 
@@ -453,6 +465,12 @@ public class IPSchueler implements Comparable<IPSchueler> {
 
     public ArrayList<IPFach> getSchlechteNoten() {
         return schlechteNoten;
+    }
+
+    public void addEinzelnote(IPEinzelnote einzelnote) {
+
+        einzelnoten.add(einzelnote);
+
     }
 }
 

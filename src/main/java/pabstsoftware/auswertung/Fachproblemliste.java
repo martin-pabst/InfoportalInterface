@@ -214,29 +214,30 @@ public class Fachproblemliste {
         String end = spalte + (n + anzahl - 1);
         String range = begin + ":" + end;
 
-        cell = row.createCell(fachIndex + headers.length);
+        if(anzahl > 1) {
+            cell = row.createCell(fachIndex + headers.length);
 
-        CellStyle style = scheinerAuswertung.cellstyles.get("percent");
-        cell.setCellStyle(style);
+            CellStyle style = scheinerAuswertung.cellstyles.get("percent");
+            cell.setCellStyle(style);
 
-        String formel = "IF(COUNT(Notenliste!" + range + ")>0,COUNTIF(Notenliste!" + range + ",\">\"&Fachquoten!$D$2)/COUNT(Notenliste!" + range + "),\"\")";
-        cell.setCellType(CellType.FORMULA);
-        cell.setCellFormula(formel);
+            String formel = "IF(COUNT(Notenliste!" + range + ")>0,COUNTIF(Notenliste!" + range + ",\">\"&Fachquoten!$D$2)/COUNT(Notenliste!" + range + "),\"\")";
+            cell.setCellType(CellType.FORMULA);
+            cell.setCellFormula(formel);
 
+            if (!comment.isEmpty()) {
+                ClientAnchor anchor = factory.createClientAnchor();
+                anchor.setCol1(cell.getColumnIndex());
+                anchor.setCol2(cell.getColumnIndex() + 1);
+                anchor.setRow1(row.getRowNum());
+                anchor.setRow2(row.getRowNum() + 3);
 
-        if (!comment.isEmpty()) {
-            ClientAnchor anchor = factory.createClientAnchor();
-            anchor.setCol1(cell.getColumnIndex());
-            anchor.setCol2(cell.getColumnIndex() + 1);
-            anchor.setRow1(row.getRowNum());
-            anchor.setRow2(row.getRowNum() + 3);
+                Comment com = drawing.createCellComment(anchor);
+                RichTextString str = factory.createRichTextString(comment);
+                com.setVisible(Boolean.FALSE);
+                com.setString(str);
 
-            Comment com = drawing.createCellComment(anchor);
-            RichTextString str = factory.createRichTextString(comment);
-            com.setVisible(Boolean.FALSE);
-            com.setString(str);
-
-            cell.setCellComment(com);
+                cell.setCellComment(com);
+            }
         }
     }
 

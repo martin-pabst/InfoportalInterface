@@ -1,9 +1,6 @@
 package pabstsoftware.auswertung;
 
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -13,6 +10,8 @@ import pabstsoftware.config.Config;
 import pabstsoftware.infoportalinterface.InfoPortalInterface;
 import pabstsoftware.infoportalinterface.InfoPortalInterfaceFactory;
 import pabstsoftware.infoportalinterface.Klassenfilter;
+import pabstsoftware.infoportalinterface.model.IPKlasse;
+import pabstsoftware.infoportalinterface.model.IPSchueler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +45,7 @@ public class ScheinerAuswertung implements Klassenfilter {
     public boolean holeKlasse(String name) {
 
 
-        boolean alle = true;
+        boolean alle = false;
 
         if (alle) {
             return true;
@@ -70,9 +69,23 @@ public class ScheinerAuswertung implements Klassenfilter {
 
             scheinerAuswertung.execute();
 
+            scheinerAuswertung.debugOutput();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void debugOutput() {
+
+        for (IPKlasse ipKlasse : ip.getKlassen()) {
+            System.out.println("Klasse " + ipKlasse.getName() + ":");
+            for (IPSchueler ipSchueler : ipKlasse.getSchuelerList()) {
+                System.out.println(ipSchueler.toString());
+            }
+            System.out.println("-------------------");
+        }
+
     }
 
     private void execute() throws IOException {
@@ -90,6 +103,9 @@ public class ScheinerAuswertung implements Klassenfilter {
 
             Fachproblemliste fpl = new Fachproblemliste(workbook, this, ip);
             fpl.execute();
+
+            SchriftlicheLeistungsnachweisAuswertung sausw = new SchriftlicheLeistungsnachweisAuswertung(workbook, this, ip);
+            sausw.execute();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,7 +162,7 @@ public class ScheinerAuswertung implements Klassenfilter {
 
         ip.fetchAbsenzen();
 
-        ip.fetchNoten();
+        ip.fetchNoten(true);
 
         ip.logout();
 
@@ -172,6 +188,11 @@ public class ScheinerAuswertung implements Klassenfilter {
         CellStyle percent = workbook.createCellStyle();
         percent.setDataFormat(workbook.createDataFormat().getFormat("0.0%"));
         cellstyles.put("percent", percent);
+
+        CellStyle date = workbook.createCellStyle();
+        CreationHelper ch = workbook.getCreationHelper();
+        date.setDataFormat(ch.createDataFormat().getFormat("d.m.yyyy"));
+        cellstyles.put("date",date);
 
         return workbook;
     }

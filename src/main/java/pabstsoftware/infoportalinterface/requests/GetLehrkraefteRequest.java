@@ -8,6 +8,9 @@ import pabstsoftware.infoportalinterface.model.IPLehrkraftListe;
 import pabstsoftware.infoportalinterface.tools.httpclient.HttpClientInterface;
 import pabstsoftware.infoportalinterface.tools.string.Finder;
 import pabstsoftware.infoportalinterface.tools.string.WordNotFoundException;
+import pabstsoftware.tools.pdfbox.PdfboxReader;
+
+import java.io.InputStream;
 
 public class GetLehrkraefteRequest extends BaseRequest {
 
@@ -51,51 +54,56 @@ public class GetLehrkraefteRequest extends BaseRequest {
 		finder.setText(response);
 
 		url = finder.findLinkURL("Berufsbezeichnung erzeugen...");
-		response = httpClient.get(url);
-		finder.setText(response);
+		InputStream is = httpClient.getAsStream(url);
+
+		String pdfText = PdfboxReader.readPdf(is);
+
+        String CR = "\r\n";
+
+        pdfText.replace("Biologin " + CR + "Brigitte", "Biologin Brigitte");
+        pdfText.replace("Brigitte" + CR + "LAv", "Brigitte LAV");
+        pdfText.replace("Wieselhuber,  " + CR + "Claudia" + CR, "Wieselhuber, Claudia ");
+
+		finder.setText(pdfText);
 
 		expectResponseContains(response, "Liste");
 		expectResponseContains(response, "Kollegiums");
 
 		finder.jumpTo("Kollegiums vom");
 
-		while (finder.find("<table")) {
 
-			String tableText = finder.markBegin().jumpTo("</table>").markEnd().getMarkedText();
-			Finder tableFinder = new Finder(tableText);
 
-			while (tableFinder.find("<tr")) {
-				String rowText = tableFinder.markBegin().jumpTo("</tr>").markEnd().getMarkedText();
-				Finder rowFinder = new Finder(rowText);
+		while (finder.find(CR)) {
 
-				String famNameKommaLeerzAkadLeerzRufname = rowFinder.jumpTo("<td").jumpTo(">").skipFoundWord()
-						.markBegin().jumpTo("</td>").markEnd().getMarkedText().trim();
-				String dienstgrad = rowFinder.jumpTo("<td").jumpTo(">").skipFoundWord().markBegin().jumpTo("</td>")
-						.markEnd().getMarkedText().trim();
-				
-				dienstgrad = dienstgrad.replace("&nbsp;", "");
+		    finder.skipFoundWord();
 
-				Finder nameFinder = new Finder(famNameKommaLeerzAkadLeerzRufname);
-				String familienname = nameFinder.markBegin().jumpTo(", ").markEnd().getMarkedText();
+			String name = finder.markBegin().jumpTo(CR).markEnd().getMarkedText();
 
-				String rufname = nameFinder.skipFoundWord().markBegin().jumpToEnd().markEnd().getMarkedText();
+			int i = name.lastIndexOf(" ");
 
-				String akadGrad = "";
-				if (rufname.contains(" ") && (rufname.contains("ipl") || rufname.contains("Dr"))) {
-					int i = rufname.indexOf(" ");
-					akadGrad = rufname.substring(0, i);
-					rufname = rufname.substring(i + 1);
-				}
+			if(name.length() > 6 && i > 3 && i < name.length() - 1){
+			    String dienstgrad = name.substring(i + 1, name.length());
+			    String famNameKommaLeerzAkadLeerzRufname = name.substring(0, i);
+                Finder nameFinder = new Finder(famNameKommaLeerzAkadLeerzRufname);
+                String familienname = nameFinder.markBegin().jumpTo(", ").markEnd().getMarkedText();
 
-				IPLehrkraft lk = lehrkraefte.findByRufnameLeerzeichenFamilienname(rufname + " " + familienname);
-				if (lk != null) {
+                String rufname = nameFinder.skipFoundWord().markBegin().jumpToEnd().markEnd().getMarkedText();
 
-					lk.setAkadGrad(akadGrad);
-					lk.setDienstgrad(dienstgrad);
+                String akadGrad = "";
+                if (rufname.contains(" ") && (rufname.contains("ipl") || rufname.contains("Dr"))) {
+                    i = rufname.indexOf(" ");
+                    akadGrad = rufname.substring(0, i);
+                    rufname = rufname.substring(i + 1);
+                }
 
-				}
+                IPLehrkraft lk = lehrkraefte.findByRufnameLeerzeichenFamilienname(rufname + " " + familienname);
+                if (lk != null) {
 
-			}
+                    lk.setAkadGrad(akadGrad);
+                    lk.setDienstgrad(dienstgrad);
+
+                }
+            }
 
 		}
 

@@ -15,5 +15,42 @@ public class IPKlassenListe extends ArrayList<IPKlasse> {
 	
 		return s;
 	}
-	
+
+    public IPKlasse findByName(String klasseText) {
+
+		if(klasseText.startsWith("0")){
+			klasseText = klasseText.substring(1);
+		}
+
+		for (IPKlasse ipKlasse : this) {
+			String klName = ipKlasse.getName();
+			if(klName.startsWith("0")){
+				klName = klName.substring(1);
+			}
+			if(klasseText.equalsIgnoreCase(klName)){
+				return ipKlasse;
+			}
+		}
+
+		return null;
+
+    }
+
+	public IPSchueler findSchuelerByName(String familienname, String rufname, IPKlasse klasse) {
+
+		IPSchueler schueler = klasse.findSchueler(rufname, familienname);
+		if(schueler != null){
+			return schueler;
+		}
+
+		for (IPKlasse ipKlasse : this) {
+			schueler = ipKlasse.findSchueler(rufname, familienname);
+			if(schueler != null){
+				return schueler;
+			}
+		}
+
+		return null;
+
+	}
 }

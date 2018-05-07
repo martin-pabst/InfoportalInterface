@@ -157,7 +157,7 @@ public class ScheinerHalbjahresberichtMain implements Klassenfilter{
 
         ip.fetchAbsenzen();
 
-        ip.fetchNoten();
+        ip.fetchNoten(false);
 
         ip.logout();
 

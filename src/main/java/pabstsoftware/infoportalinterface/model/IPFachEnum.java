@@ -79,6 +79,10 @@ public enum IPFachEnum {
             }
         }
 
+        if(anzeigeform.equalsIgnoreCase("Wirtschaft und Recht")){
+            return IPFachEnum.WR;
+        }
+
         return null;
     }
 

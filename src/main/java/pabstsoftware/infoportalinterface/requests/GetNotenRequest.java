@@ -8,13 +8,12 @@ import pabstsoftware.infoportalinterface.tools.httpclient.HttpClientInterface;
 import pabstsoftware.infoportalinterface.tools.string.Finder;
 import pabstsoftware.infoportalinterface.tools.string.WordNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class GetNotenRequest extends BaseRequest {
 
+    private final boolean mitEinzelnoten;
     private IPKlassenListe klassen;
 
     private IPLehrkraftListe lehrkraefte;
@@ -23,11 +22,12 @@ public class GetNotenRequest extends BaseRequest {
 
 
     public GetNotenRequest(InfoPortalInterface infoPortalInterface, String mainPage, IPLehrkraftListe lehrkraefte,
-                           IPKlassenListe klassen) {
+                           IPKlassenListe klassen, boolean mitEinzelnoten) {
         super(infoPortalInterface);
         this.mainPage = mainPage;
         this.lehrkraefte = lehrkraefte;
         this.klassen = klassen;
+        this.mitEinzelnoten = mitEinzelnoten;
     }
 
     @Override
@@ -38,13 +38,13 @@ public class GetNotenRequest extends BaseRequest {
 
         HttpClientInterface httpClient = getHttpClient();
 
-        fetchNoten(httpClient);
+        fetchNoten(httpClient, mitEinzelnoten);
 
         return mainPage;
 
     }
 
-    private void fetchNoten(HttpClientInterface httpClient)
+    private void fetchNoten(HttpClientInterface httpClient, boolean mitEinzelnoten)
             throws WordNotFoundException, Exception, ResponseNotExpectedException {
 
         Finder finder = new Finder(mainPage);
@@ -130,16 +130,20 @@ public class GetNotenRequest extends BaseRequest {
             String rowText = finder.markBegin().jumpTo("</tr>").markEnd().getMarkedText();
             finder1.setText(rowText);
 
-            getSchuelerNotenFromRow(finder1, klasse, faecherList);
+            getSchuelerNotenFromRow(finder1, klasse, faecherList, httpClient);
 
         }
 
 
     }
 
-    private void getSchuelerNotenFromRow(Finder finder, IPKlasse klasse, ArrayList<String> faecherList) {
+    private void getSchuelerNotenFromRow(Finder finder, IPKlasse klasse, ArrayList<String> faecherList, HttpClientInterface httpClient) throws Exception {
 
+        int pos = finder.getPos();
         String familienname = finder.getXMLText("a");
+        finder.setPos(pos);
+        String url = finder.findLinkURL(familienname);
+
         String rufname = finder.getXMLText("span");
 
         IPSchueler schueler = klasse.findSchueler(rufname, familienname);
@@ -169,6 +173,12 @@ public class GetNotenRequest extends BaseRequest {
             findNoten(schueler, noten, fach);
 
         }
+
+        if (url.length() > 5 && schueler != null && mitEinzelnoten) {
+            fetchEinzelnoten(url, schueler, klasse, httpClient);
+            System.out.print("/");
+        }
+
 
     }
 
@@ -282,7 +292,7 @@ public class GetNotenRequest extends BaseRequest {
 
         String[] whArray = wiederholungText.split("<br />");
 
-        for (int i = 0; i < whArray.length; i ++) {
+        for (int i = 0; i < whArray.length; i++) {
 
             String jgst = whArray[i].replace(". Jgst.", "");
 
@@ -294,8 +304,8 @@ public class GetNotenRequest extends BaseRequest {
 
                 String zusatztext = "";
 
-                if(i + 1 < whArray.length && !whArray[i+1].contains("Jgst.")){
-                    zusatztext = whArray[i+1];
+                if (i + 1 < whArray.length && !whArray[i + 1].contains("Jgst.")) {
+                    zusatztext = whArray[i + 1];
                     i++;
                 }
 
@@ -324,6 +334,142 @@ public class GetNotenRequest extends BaseRequest {
         }
 
         return faecherliste;
+
+    }
+
+
+    private void fetchEinzelnoten(String url, IPSchueler schueler, IPKlasse klasse, HttpClientInterface httpClient) throws Exception {
+
+        String response = httpClient.get(url);
+        expectResponseContains(response, "Leistungs");
+        expectResponseContains(response, "Datum");
+
+        Finder finder = new Finder(response);
+        finder.find("Leistungs");
+        finder.find("Datum");
+        finder.jumpTo("<table").markBegin().jumpTo("Nach oben").findBackward("</table>");
+        String table = finder.markEnd().getMarkedText();
+
+        finder = new Finder(table);
+
+        while(finder.find("<tr")) {
+            String fachLehrkraftRowString = finder.getXMLText("tr");
+            String durchschnittRowString = finder.getXMLText("tr");
+            String saRowString = finder.getXMLText("tr");
+            String kaRowString = finder.getXMLText("tr");
+            String stRowString = finder.getXMLText("tr");
+            String mRowString = finder.getXMLText("tr");
+
+            Finder fachFinder = new Finder(fachLehrkraftRowString);
+            String fachLang = fachFinder.getXMLText("td");
+
+            IPFachEnum ipFach = IPFachEnum.findByAnzeigeform(fachLang);
+
+            fachFinder.getXMLText("td");
+
+            String lehrkraftLang = fachFinder.getXMLText("td").replace("&nbsp;", " ");
+
+            lehrkraftLang = lehrkraftLang.replace("<br />", "");
+            lehrkraftLang = lehrkraftLang.trim();
+
+
+            IPNotenArt[] notenarten = { IPNotenArt.schulaufgabe, IPNotenArt.kurzarbeit, IPNotenArt.stegreifaufgabe, IPNotenArt.mündlich};
+            String[] html = {saRowString, kaRowString, stRowString, mRowString};
+
+            for(int i = 0; i < notenarten.length; i++){
+                fetchEinzelnotenJeArt(notenarten[i], html[i], schueler, klasse, ipFach);
+            }
+
+        }
+
+
+
+    }
+
+    private void fetchEinzelnotenJeArt(IPNotenArt ipNotenArt, String html, IPSchueler schueler, IPKlasse klasse, IPFachEnum ipFach) throws Exception {
+
+        html = html.replace("&nbsp;", " ");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+
+        Finder finder = new Finder(html);
+        finder.setText(finder.getXMLText("table"));
+
+        String notenartString = finder.getXMLText("td");
+        if(notenartString.endsWith(":")){
+            notenartString = notenartString.substring(0, notenartString.length() - 1);
+        }
+
+        // Wir verwerfen die übergebene Notenart und halte uns an den Text der Tabelle:
+        IPNotenArt notenArt = IPNotenArt.findByKurzform(notenartString);
+
+        while(finder.find("<td")){
+
+            String text = finder.getXMLText("td");
+            if(text.contains("-") && text.length() > 5){
+                Finder f = new Finder(text);
+                String datumLehrkraft = f.markBegin().jumpTo("<br />").markEnd().getMarkedText();
+                String noteFaktor = f.skipFoundWord().markBegin().jumpToOrToEnd("<br />").markEnd().getMarkedText();
+                f.skipFoundWord();
+                String zusatz = "";
+                if(!f.textEnded()) {
+                    zusatz = f.markBegin().jumpToEnd().markEnd().getMarkedText();
+                }
+
+                boolean isNachholschulaufgabe = false;
+
+                if(zusatz.contains("NS:")){
+                    zusatz = "";
+                    isNachholschulaufgabe = true;
+                }
+
+                int bindestrichIndex = datumLehrkraft.lastIndexOf("-");
+                String datumString = datumLehrkraft.substring(0, bindestrichIndex);
+
+                boolean isTest = false;
+
+                if(datumString.startsWith("T-")){
+                    datumString = datumString.substring(2);
+                    isTest = true;
+                }
+
+                if(datumString.charAt(1) == '-'){
+                    datumString = datumString.substring(2);
+                }
+
+
+                Date date = sdf.parse(datumString);
+                String lkKuerzel = datumLehrkraft.substring(bindestrichIndex + 1, datumLehrkraft.length());
+                IPLehrkraft ipLehrkraft = lehrkraefte.findByKuerzel(lkKuerzel);
+
+                IPNote ipNote = null;
+                double faktor = 1.00;
+                boolean gefehlt = false;
+
+                if(noteFaktor.contains("gefehlt")){
+                    gefehlt = true;
+                } else {
+                    ipNote = new IPNote(noteFaktor);
+
+                    if(noteFaktor.contains("x")) {
+                        int faktorBegin = noteFaktor.indexOf("x") + 1;
+                        int faktorEnd = noteFaktor.indexOf(" )");
+                        String faktorString = noteFaktor.substring(faktorBegin, faktorEnd);
+
+                        faktor = Double.parseDouble(faktorString);
+                    }
+                }
+
+
+                IPEinzelnote einzelnote = new IPEinzelnote(ipFach, notenArt, ipLehrkraft, date, faktor,
+                        gefehlt, ipNote, zusatz, isTest, isNachholschulaufgabe);
+
+                schueler.addEinzelnote(einzelnote);
+
+            }
+
+
+        }
 
     }
 

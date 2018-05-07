@@ -19,6 +19,10 @@ public class Finder {
 
 	}
 
+	public boolean seek(String word){
+		return text.indexOf(word, pos) >= 0;
+	}
+
 	public boolean find(String word) {
 
 		int i = text.indexOf(word, pos);
@@ -47,10 +51,10 @@ public class Finder {
 		return true;
 	}
 
-	public Finder jumpTo(String word) {
-		find(word);
-		return this;
-	}
+    public Finder jumpTo(String word) {
+        find(word);
+        return this;
+    }
 
 	public Finder jumpToBackward(String word) {
 		findBackward(word);
@@ -123,11 +127,34 @@ public class Finder {
 	 */
 	public String getXMLText(String element) {
 
+
 		jumpTo("<" + element);
-		jumpTo(">").skipFoundWord().markBegin().jumpTo("</" + element + ">").markEnd();
+        skipFoundWord();
+        jumpTo(">").skipFoundWord().markBegin();
+
+		int depth = 1;
+
+		while(depth > 0){
+
+		    int posElementstart = text.indexOf("<" + element, pos);
+		    int posElementEnd = text.indexOf("</" + element, pos);
+
+		    if(posElementstart > 0 && posElementstart < posElementEnd){
+		        depth++;
+		        pos = posElementstart + ("" + element).length();
+            } else if(posElementEnd > 0){
+		        depth--;
+		        if(depth == 0){
+		            pos = posElementEnd;
+		            markEnd();
+                }
+		        pos = posElementEnd + ("</" + element + ">").length();
+            } else {
+                return "";
+            }
+        }
 
 		String text = getMarkedText();
-		skipFoundWord();
 
 		text = text.replaceAll("&nbsp;", " ");
 		text = text.trim();
@@ -160,4 +187,26 @@ public class Finder {
 		return this;
 
 	}
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+
+    public boolean textEnded() {
+        return pos >= text.length();
+	}
+
+    public Finder jumpToOrToEnd(String word) {
+
+    if(!find(word)) {
+        lastWordLength = 0;
+        pos = text.length();
+    }
+        return this;
+
+    }
 }

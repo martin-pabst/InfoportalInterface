@@ -21,7 +21,7 @@ public class GetLehrkraefteUndKlassenTest {
         ip.fetchAbsenzen();
         System.out.println("\nAbsenzen fertig geholt!\n");
 
-        ip.fetchNoten();
+        ip.fetchNoten(false);
         System.out.println("\nNoten fertig geholt!\n");
 
 		ip.logout();

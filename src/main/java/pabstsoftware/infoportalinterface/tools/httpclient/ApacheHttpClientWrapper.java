@@ -25,6 +25,7 @@ import pabstsoftware.config.Config;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -142,7 +143,7 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
     }
 
     @Override
-    public String get(String url) throws Exception {
+    public InputStream getAsStream(String url) throws Exception {
 
         setURL(url);
 
@@ -181,7 +182,14 @@ public class ApacheHttpClientWrapper implements HttpClientInterface {
 
         clearParameters();
 
-        return convertStreamToString(response.getEntity().getContent());
+        return response.getEntity().getContent();
+
+    }
+
+    @Override
+    public String get(String url) throws Exception {
+
+        return convertStreamToString(getAsStream(url));
 
     }
 

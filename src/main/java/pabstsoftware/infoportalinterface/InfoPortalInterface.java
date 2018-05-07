@@ -93,9 +93,9 @@ public class InfoPortalInterface {
 
 	}
 	
-	public void fetchNoten() throws Exception {
+	public void fetchNoten(boolean mitEinzelnoten) throws Exception {
 
-		GetNotenRequest gnr = new GetNotenRequest(this, mainPage, lehrkraefte, klassen);
+		GetNotenRequest gnr = new GetNotenRequest(this, mainPage, lehrkraefte, klassen, mitEinzelnoten);
 		gnr.execute();
 		
 	}

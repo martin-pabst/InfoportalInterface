@@ -46,4 +46,12 @@ public class IPLehrkraftListe extends ArrayList<IPLehrkraft> {
 
 		return null;
     }
+
+    public IPLehrkraft findByFamiliennameKommaLeerRufname(String lehrkraft) {
+    	int kommaIndex = lehrkraft.indexOf(",");
+    	String familienname = lehrkraft.substring(0, kommaIndex).trim();
+    	String rufname = lehrkraft.substring(kommaIndex + 1, lehrkraft.length()).trim();
+    	return findByRufnameLeerzeichenFamilienname(rufname + " " + familienname);
+
+	}
 }

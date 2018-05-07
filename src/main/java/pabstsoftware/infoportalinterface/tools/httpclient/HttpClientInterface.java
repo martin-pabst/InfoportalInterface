@@ -1,5 +1,6 @@
 package pabstsoftware.infoportalinterface.tools.httpclient;
 
+import java.io.InputStream;
 import java.util.Map;
 
 public interface HttpClientInterface {
@@ -9,6 +10,8 @@ public interface HttpClientInterface {
 	public HttpClientInterface addParameter(String key, String value);
 
 	public HttpClientInterface clearParameters();
+
+	InputStream getAsStream(String url) throws Exception;
 
 	public String get(String url) throws Exception;
 
