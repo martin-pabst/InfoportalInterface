@@ -32,7 +32,23 @@ public class SchriftlicherLeistungsnachweisStore extends ArrayList<Schriftlicher
 
         if(!note.isNachholschulaufgabe() && !note.isGefehlt() && note.isAuswertbar() && note.getNotenArt().isSchriftlich()){
 
-            SchriftlicherLeistungsnachweis lnw = getLNW(note.getFach(), schueler.getKlasse(), note.getDatum(), note.getNotenArt());
+            IPKlasse klasse = schueler.getKlasse();
+            IPKoppelgruppe koppelgruppe = null;
+
+            for (IPKoppelgruppe kg : koppelgruppen) {
+                if(note.getLehrkraft() == kg.getLehrkraft() && note.getFach() == kg.getFach()){
+                    ArrayList<IPSchueler> schuelerliste = kg.getSchuelerMap().get(klasse);
+                    if(schuelerliste != null){
+                        if(schuelerliste.contains(schueler)){
+                            koppelgruppe = kg;
+                            klasse = null;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            SchriftlicherLeistungsnachweis lnw = getLNW(note.getFach(), klasse, koppelgruppe, note.getDatum(), note.getNotenArt());
 
             if(lnw == null){
                 lnw = new SchriftlicherLeistungsnachweis(schueler.getKlasse(), note.getLehrkraft(), note.getDatum(), note.getNotenArt(), note.getFach());

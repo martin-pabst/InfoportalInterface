@@ -106,4 +106,7 @@ public class SchriftlicherLeistungsnachweis {
         return anzahl;
     }
 
+    public String getKlasseOrKoppelgruppe() {
+        return klasse == null ? koppelgruppe.getName() : klasse.getName();
+    }
 }

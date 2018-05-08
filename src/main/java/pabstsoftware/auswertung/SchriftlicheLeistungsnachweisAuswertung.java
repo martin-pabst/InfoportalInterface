@@ -72,7 +72,7 @@ public class SchriftlicheLeistungsnachweisAuswertung {
             cell.setCellValue(lnw.getJahrgangsstufe());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(lnw.getKlasse().getName());
+            cell.setCellValue(lnw.getKlasseOrKoppelgruppe());
 
             cell = row.createCell(colNum++);
             cell.setCellValue(lnw.getFach().getKurzform());
