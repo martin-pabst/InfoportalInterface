@@ -31,18 +31,30 @@ public class GetKoppelgruppenRequest extends BaseRequest {
 	public String execute() throws Exception {
 
 		Logger logger = LoggerFactory.getLogger(this.getClass());
-		logger.info("Hole Daten der Klassen aus dem Infoportal");
+		logger.info("Hole Daten der Koppelgruppen aus dem Infoportal");
 
 		HttpClientInterface httpClient = getHttpClient();
 
 		fetchKoppelgruppen(httpClient);
 
-		return mainPage;
+		System.out.println("\nKoppelgruppen:\n==============");
+
+        for (IPKoppelgruppe kg : koppelgruppen) {
+
+            System.out.println(kg.toString());
+
+        }
+
+
+        return mainPage;
 
 	}
 
+    public ArrayList<IPKoppelgruppe> getKoppelgruppen() {
+        return koppelgruppen;
+    }
 
-	private void fetchKoppelgruppen(HttpClientInterface httpClient)
+    private void fetchKoppelgruppen(HttpClientInterface httpClient)
 			throws WordNotFoundException, Exception, ResponseNotExpectedException {
 
         koppelgruppen = new ArrayList<>();
@@ -71,26 +83,34 @@ public class GetKoppelgruppenRequest extends BaseRequest {
 
         finder.setText(finder.getXMLText("tr"));
 
+        System.out.println("");
+
         while(finder.find("<a")){
 
-            url = finder.jumpTo("href=\"").skipFoundWord().markBegin().jumpTo("\"").markEnd().getMarkedText();
-            String lehrkraft = finder.jumpTo("title=\"").skipFoundWord().markBegin().jumpTo("\"").markEnd().getMarkedText();
+            url = finder.jumpTo("href='").skipFoundWord().markBegin().jumpTo("'").markEnd().getMarkedText();
+            String lehrkraft = finder.jumpTo("title='").skipFoundWord().markBegin().jumpTo("'").markEnd().getMarkedText();
             String koppelgruppenBezeichner = finder.jumpTo(">").skipFoundWord().markBegin().jumpTo("</a>").markEnd().getMarkedText();
 
-            IPLehrkraft ipLehrkraft = lehrkraefte.findByFamiliennameKommaLeerRufname(lehrkraft);
+            int kommaIndex = lehrkraft.indexOf(",");
+            if(kommaIndex > 0){
+                lehrkraft = lehrkraft.substring(0, kommaIndex);
+            }
 
+            IPLehrkraft ipLehrkraft = lehrkraefte.findByRufnameLeerzeichenFamilienname(lehrkraft);
+
+            System.out.print(koppelgruppenBezeichner + ", ");
             fetchKoppelgruppe(httpClient, url, ipLehrkraft, koppelgruppenBezeichner);
 
         }
+
+        System.out.println("");
 
 	}
 
     private void fetchKoppelgruppe(HttpClientInterface httpClient, String url, IPLehrkraft lehrkraft, String koppelgruppenBezeichner) throws Exception {
 
-        Finder finder = new Finder(mainPage);
-
         String response = httpClient.get(url);
-        finder.setText(response);
+        Finder finder = new Finder(response);
 
         expectResponseContains(response, "Schuljahr");
         expectResponseContains(response, "geteilte Klassen");
@@ -108,8 +128,8 @@ public class GetKoppelgruppenRequest extends BaseRequest {
             Finder finder1 = new Finder(trText);
             if(trText.contains("Drucken")){
                 // Fach extrahieren
-                finder1.jumpTo("<a").jumpTo("<span").jumpTo(">");
-                String fachtext = finder.jumpTo("\"").skipFoundWord().markBegin().jumpTo("\"").markEnd().getMarkedText();
+                finder1.jumpTo("<span");
+                String fachtext = finder1.jumpTo(">").skipFoundWord().markBegin().jumpTo("<").markEnd().getMarkedText();
                 fach = IPFachEnum.findByAnzeigeform(fachtext);
             } else if(trText.contains("text_12pt_bold")){
                 // Klasse extrahieren
@@ -117,20 +137,22 @@ public class GetKoppelgruppenRequest extends BaseRequest {
                 klasse = klassen.findByName(klasseText);
             } else {
                 // Schüler/in extrahieren
-                finder.getXMLText("td");
-                String name = finder.getXMLText("td");
-                name = name.replace("<br>", " ").trim();
+                finder1.getXMLText("td");
+                String name = finder1.getXMLText("td");
+                name = name.replace("<br />", " ").trim();
                 int kommaIndex = name.indexOf(",");
-                String familienname = name.substring(0, kommaIndex).trim();
-                String rufname = name.substring(kommaIndex + 1, name.length()).trim();
-                IPSchueler schueler = klassen.findSchuelerByName(familienname, rufname, klasse);
+                if(kommaIndex > 0) {
+                    String familienname = name.substring(0, kommaIndex).trim();
+                    String rufname = name.substring(kommaIndex + 1, name.length()).trim();
+                    IPSchueler schueler = klassen.findSchuelerByName(familienname, rufname, klasse);
 
-                if(schueler != null && klasse != null && fach != null && lehrkraft != null){
-                    if(koppelgruppe == null){
-                        koppelgruppe = new IPKoppelgruppe(koppelgruppenBezeichner, fach, lehrkraft);
-                        koppelgruppen.add(koppelgruppe);
+                    if (schueler != null && klasse != null && fach != null && lehrkraft != null) {
+                        if (koppelgruppe == null) {
+                            koppelgruppe = new IPKoppelgruppe(koppelgruppenBezeichner, fach, lehrkraft);
+                            koppelgruppen.add(koppelgruppe);
+                        }
+                        koppelgruppe.addSchueler(schueler);
                     }
-                    koppelgruppe.addSchueler(schueler);
                 }
 
             }

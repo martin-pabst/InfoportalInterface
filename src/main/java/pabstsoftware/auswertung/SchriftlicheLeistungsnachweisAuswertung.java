@@ -60,7 +60,7 @@ public class SchriftlicheLeistungsnachweisAuswertung {
         SchriftlicherLeistungsnachweisStore store = new SchriftlicherLeistungsnachweisStore();
         for (IPKlasse ipKlasse : ip.getKlassen()) {
             for (IPSchueler ipSchueler : ipKlasse.getSchuelerList()) {
-                store.analysiere(ipSchueler);
+                store.analysiere(ipSchueler, ip.getKoppelgruppen());
             }
         }
 

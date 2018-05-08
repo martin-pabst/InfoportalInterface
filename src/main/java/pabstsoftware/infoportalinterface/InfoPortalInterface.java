@@ -2,11 +2,14 @@ package pabstsoftware.infoportalinterface;
 
 import pabstsoftware.config.Config;
 import pabstsoftware.infoportalinterface.model.IPKlassenListe;
+import pabstsoftware.infoportalinterface.model.IPKoppelgruppe;
 import pabstsoftware.infoportalinterface.model.IPLehrkraftListe;
 import pabstsoftware.infoportalinterface.model.IPSchuelerListe;
 import pabstsoftware.infoportalinterface.requests.*;
 import pabstsoftware.infoportalinterface.tools.httpclient.ApacheHttpClientWrapper;
 import pabstsoftware.infoportalinterface.tools.httpclient.HttpClientInterface;
+
+import java.util.ArrayList;
 
 public class InfoPortalInterface {
 
@@ -27,6 +30,7 @@ public class InfoPortalInterface {
 	private IPSchuelerListe schueler = new IPSchuelerListe();
 	private IPKlassenListe klassen = new IPKlassenListe();
 	private Klassenfilter klassenfilter;
+	private ArrayList<IPKoppelgruppe> koppelgruppen;
 
 	/**
 	 * 
@@ -92,7 +96,14 @@ public class InfoPortalInterface {
 		gksr.execute();
 
 	}
-	
+
+	public void fetchKoppelgruppen() throws Exception {
+		GetKoppelgruppenRequest gkr = new GetKoppelgruppenRequest(this, mainPage, lehrkraefte, klassen);
+		gkr.execute();
+		this.koppelgruppen = gkr.getKoppelgruppen();
+
+	}
+
 	public void fetchNoten(boolean mitEinzelnoten) throws Exception {
 
 		GetNotenRequest gnr = new GetNotenRequest(this, mainPage, lehrkraefte, klassen, mitEinzelnoten);
@@ -143,5 +154,9 @@ public class InfoPortalInterface {
 
 	public Klassenfilter getKlassenfilter() {
 		return klassenfilter;
+	}
+
+	public ArrayList<IPKoppelgruppe> getKoppelgruppen() {
+		return koppelgruppen;
 	}
 }

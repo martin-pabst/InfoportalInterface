@@ -38,9 +38,13 @@ public class IPKlassenListe extends ArrayList<IPKlasse> {
 
 	public IPSchueler findSchuelerByName(String familienname, String rufname, IPKlasse klasse) {
 
-		IPSchueler schueler = klasse.findSchueler(rufname, familienname);
-		if(schueler != null){
-			return schueler;
+	    IPSchueler schueler = null;
+
+		if(klasse != null) {
+			schueler = klasse.findSchueler(rufname, familienname);
+			if (schueler != null) {
+				return schueler;
+			}
 		}
 
 		for (IPKlasse ipKlasse : this) {

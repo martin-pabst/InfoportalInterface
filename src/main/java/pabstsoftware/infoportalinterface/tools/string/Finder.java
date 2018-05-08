@@ -209,4 +209,8 @@ public class Finder {
         return this;
 
     }
+
+	public String getText() {
+		return text;
+	}
 }

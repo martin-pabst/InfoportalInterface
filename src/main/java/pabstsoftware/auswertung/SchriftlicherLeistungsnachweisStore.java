@@ -16,21 +16,19 @@ public class SchriftlicherLeistungsnachweisStore extends ArrayList<Schriftlicher
         return super.add(lnw);
     }
 
-    public SchriftlicherLeistungsnachweis getLNW(IPFachEnum fach, IPKlasse klasse, Date datum, IPNotenArt art){
-        return map.get(getHash(fach,klasse,datum, art));
+    public SchriftlicherLeistungsnachweis getLNW(IPFachEnum fach, IPKlasse klasse, IPKoppelgruppe koppelgruppe, Date datum, IPNotenArt art){
+        return map.get(SchriftlicherLeistungsnachweis.getHash(fach,klasse, koppelgruppe, datum, art));
     }
 
-    public String getHash(IPFachEnum fach, IPKlasse klasse, Date datum, IPNotenArt art){
-        return fach.toString() + klasse.getName() + datum.toString() + art.toString();
-    }
 
-    public void analysiere(IPSchueler schueler){
+
+    public void analysiere(IPSchueler schueler, ArrayList<IPKoppelgruppe> koppelgruppen){
         for (IPEinzelnote note : schueler.getEinzelnoten()) {
-            analysiere(note, schueler);
+            analysiere(note, schueler, koppelgruppen);
         }
     }
 
-    private void analysiere(IPEinzelnote note, IPSchueler schueler){
+    private void analysiere(IPEinzelnote note, IPSchueler schueler, ArrayList<IPKoppelgruppe> koppelgruppen){
 
         if(!note.isNachholschulaufgabe() && !note.isGefehlt() && note.isAuswertbar() && note.getNotenArt().isSchriftlich()){
 

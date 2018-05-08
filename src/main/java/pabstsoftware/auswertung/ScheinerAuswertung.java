@@ -52,7 +52,7 @@ public class ScheinerAuswertung implements Klassenfilter {
         }
 
 
-        if (name.toLowerCase().startsWith("09a")) {
+        if (name.toLowerCase().startsWith("07c")) {
             return true;
         } else {
             return false;
@@ -69,7 +69,7 @@ public class ScheinerAuswertung implements Klassenfilter {
 
             scheinerAuswertung.execute();
 
-            scheinerAuswertung.debugOutput();
+//            scheinerAuswertung.debugOutput();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,6 +161,8 @@ public class ScheinerAuswertung implements Klassenfilter {
         ip.fetchKlassen(ip.getLehrkraefte());
 
         ip.fetchAbsenzen();
+
+        ip.fetchKoppelgruppen();
 
         ip.fetchNoten(true);
 

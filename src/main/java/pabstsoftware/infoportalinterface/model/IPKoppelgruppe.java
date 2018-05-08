@@ -11,6 +11,22 @@ public class IPKoppelgruppe {
     private HashMap<IPKlasse, ArrayList<IPSchueler>> schuelerMap = new HashMap<>();
     private ArrayList<IPKlasse> klassen = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        String s = "IPKoppelgruppe{" +
+                "name='" + name + '\'' +
+                ", fach=" + fach +
+                ", lehrkraft=" + lehrkraft +
+                "}, Klassen: {";
+        for (IPKlasse ipKlasse : klassen) {
+             s += ipKlasse.getName() + ": " + schuelerMap.get(ipKlasse).size() + " Schüler, ";
+        }
+
+        s += "}";
+
+        return s;
+    }
+
     public IPKoppelgruppe(String name, IPFachEnum fach, IPLehrkraft lehrkraft) {
         this.name = name;
         this.fach = fach;

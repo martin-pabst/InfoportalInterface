@@ -10,6 +10,7 @@ public class SchriftlicherLeistungsnachweis {
 
     private ArrayList<IPEinzelnote> noten = new ArrayList<>();
     private IPKlasse klasse;
+    private IPKoppelgruppe koppelgruppe;
     private IPLehrkraft lehrkraft;
     private Date datum;
     private IPNotenArt art;
@@ -29,7 +30,13 @@ public class SchriftlicherLeistungsnachweis {
     }
 
     public String getHash() {
-        return fach.toString() + klasse.getName() + datum.toString() + art.toString();
+        return getHash(fach, klasse, koppelgruppe, datum, art);
+    }
+
+    public static String getHash(IPFachEnum fach, IPKlasse klasse, IPKoppelgruppe koppelgruppe, Date datum, IPNotenArt art){
+        return fach.toString() +
+                (klasse == null ? koppelgruppe.getName() : klasse.getName())
+                + datum.toString() + art.toString();
     }
 
     public int getJahrgangsstufe() {

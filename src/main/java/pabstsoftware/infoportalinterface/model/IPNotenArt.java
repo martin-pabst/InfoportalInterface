@@ -29,4 +29,8 @@ public enum IPNotenArt {
     public boolean isSchriftlich() {
         return this == schulaufgabe || this == stegreifaufgabe || this == kurzarbeit;
     }
+
+    public String getKurzform() {
+        return text;
+    }
 }
