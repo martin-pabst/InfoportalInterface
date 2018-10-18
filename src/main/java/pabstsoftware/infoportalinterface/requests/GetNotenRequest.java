@@ -341,6 +341,7 @@ public class GetNotenRequest extends BaseRequest {
     private void fetchEinzelnoten(String url, IPSchueler schueler, IPKlasse klasse, HttpClientInterface httpClient) throws Exception {
 
         String response = httpClient.get(url);
+        System.out.println(url);
         expectResponseContains(response, "Leistungs");
         expectResponseContains(response, "Datum");
 

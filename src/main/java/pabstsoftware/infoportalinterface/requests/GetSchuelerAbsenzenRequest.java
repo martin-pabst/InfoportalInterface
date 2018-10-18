@@ -187,9 +187,11 @@ public class GetSchuelerAbsenzenRequest extends BaseRequest {
 
         IPAbsenzArt absenzArt = IPAbsenzArt.fromText(art);
 
-        IPAbsenz absenz = new IPAbsenz(dateVon, dateBis, tageInt, stundenInt, minutenInt, art, absenzArt, null, null);
+        if(absenzArt != IPAbsenzArt.klassenabsenz) {
+            IPAbsenz absenz = new IPAbsenz(dateVon, dateBis, tageInt, stundenInt, minutenInt, art, absenzArt, null, null);
 
-        schueler.addAbsenz(absenz);
+            schueler.addAbsenz(absenz);
+        }
 
     }
 

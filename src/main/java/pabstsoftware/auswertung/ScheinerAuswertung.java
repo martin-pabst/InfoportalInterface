@@ -34,6 +34,7 @@ public class ScheinerAuswertung implements Klassenfilter {
     private Workbook workbook;
 
     public HashMap<String, CellStyle> cellstyles = new HashMap<>();
+    private boolean mitSchriftlLNWAuswertung = false;
 
 
     /**
@@ -45,14 +46,14 @@ public class ScheinerAuswertung implements Klassenfilter {
     public boolean holeKlasse(String name) {
 
 
-        boolean alle = false;
+        boolean alle = true;
 
         if (alle) {
             return true;
         }
 
 
-        if (name.toLowerCase().startsWith("07c")) {
+        if (name.toLowerCase().startsWith("08c")) {
             return true;
         } else {
             return false;
@@ -104,8 +105,10 @@ public class ScheinerAuswertung implements Klassenfilter {
             Fachproblemliste fpl = new Fachproblemliste(workbook, this, ip);
             fpl.execute();
 
-            SchriftlicheLeistungsnachweisAuswertung sausw = new SchriftlicheLeistungsnachweisAuswertung(workbook, this, ip);
-            sausw.execute();
+            if(mitSchriftlLNWAuswertung) {
+                SchriftlicheLeistungsnachweisAuswertung sausw = new SchriftlicheLeistungsnachweisAuswertung(workbook, this, ip);
+                sausw.execute();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,7 +167,7 @@ public class ScheinerAuswertung implements Klassenfilter {
 
         ip.fetchKoppelgruppen();
 
-        ip.fetchNoten(true);
+        ip.fetchNoten(mitSchriftlLNWAuswertung);
 
         ip.logout();
 

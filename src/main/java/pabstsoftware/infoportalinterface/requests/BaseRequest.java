@@ -25,6 +25,9 @@ public abstract class BaseRequest {
 	protected void expectResponseContains(String response, String expectedText) throws ResponseNotExpectedException {
 
 		if (!response.contains(expectedText)) {
+
+			System.out.println(response);
+
 			throw new ResponseNotExpectedException(response, expectedText);
 		}
 

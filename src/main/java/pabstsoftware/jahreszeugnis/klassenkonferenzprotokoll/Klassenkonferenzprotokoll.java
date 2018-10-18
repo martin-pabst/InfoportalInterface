@@ -349,24 +349,25 @@ public class Klassenkonferenzprotokoll {
 
         for (IPSchueler schueler : klasse.getSchuelerList()) {
             for (IPAbsenz absenz : schueler.getAbsenzen()) {
-                // Create a row and put some cells in it. Rows are 0 based.
-                row = sheet.createRow(rownum++);
+                if(absenz.getArt() != IPAbsenzArt.klassenabsenz) {
+                    // Create a row and put some cells in it. Rows are 0 based.
+                    row = sheet.createRow(rownum++);
 
-                row.createCell(0).setCellValue(schueler.getFamiliennameRufname());
-                if (absenz.getVon() != null) {
-                    Cell dc1 = row.createCell(1);
-                    dc1.setCellValue(absenz.getVon());
-                    dc1.setCellStyle(dateStyle);
+                    row.createCell(0).setCellValue(schueler.getFamiliennameRufname());
+                    if (absenz.getVon() != null) {
+                        Cell dc1 = row.createCell(1);
+                        dc1.setCellValue(absenz.getVon());
+                        dc1.setCellStyle(dateStyle);
+                    }
+                    if (absenz.getBis() != null) {
+                        Cell dc1 = row.createCell(2);
+                        dc1.setCellValue(absenz.getBis());
+                        dc1.setCellStyle(dateStyle);
+                    }
+                    row.createCell(3).setCellValue(absenz.getTage());
+                    row.createCell(4).setCellValue(absenz.getStunden());
+                    row.createCell(5).setCellValue(absenz.getArtText());
                 }
-                if (absenz.getBis() != null) {
-                    Cell dc1 = row.createCell(2);
-                    dc1.setCellValue(absenz.getBis());
-                    dc1.setCellStyle(dateStyle);
-                }
-                row.createCell(3).setCellValue(absenz.getTage());
-                row.createCell(4).setCellValue(absenz.getStunden());
-                row.createCell(5).setCellValue(absenz.getArtText());
-
             }
         }
 
@@ -405,17 +406,17 @@ public class Klassenkonferenzprotokoll {
             boolean laengereErkrankung = false;
 
             for (IPAbsenz absenz : schueler.getAbsenzen()) {
+                if(absenz.getArt() != IPAbsenzArt.klassenabsenz) {
+                    tage += absenz.getTage();
 
-                tage += absenz.getTage();
+                    if (absenz.getStunden() > 0) {
+                        stundenweise++;
+                    }
 
-                if (absenz.getStunden() > 0) {
-                    stundenweise++;
+                    if (absenz.getTage() > 10) {
+                        laengereErkrankung = true;
+                    }
                 }
-
-                if (absenz.getTage() > 10) {
-                    laengereErkrankung = true;
-                }
-
             }
 
             schueler.setAbsenzStundenGesamt(stundenweise);

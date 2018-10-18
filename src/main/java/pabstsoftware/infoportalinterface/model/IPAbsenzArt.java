@@ -5,9 +5,15 @@ package pabstsoftware.infoportalinterface.model;
  */
 public enum IPAbsenzArt {
 
-    krank, stundenweiseBefreit, verspaetet;
+    krank, stundenweiseBefreit, verspaetet, klassenabsenz;
 
     public static IPAbsenzArt fromText(String art) {
+
+        art = art.toLowerCase();
+
+        if(art.contains("schul") || art.contains("klasse") || art.contains("jahrgang")){
+            return klassenabsenz;
+        }
 
         if(art.contains("krank")) return krank;
         if(art.contains("befreit") && art.contains("bis")) return stundenweiseBefreit;

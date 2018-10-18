@@ -316,7 +316,7 @@ public class IPSchueler implements Comparable<IPSchueler> {
             if (fach.getFachEnum().istVorrueckungsfach(klasse.getJahrgangsstufe())
                     && fach.getJahreszeugnisNote() != null && fach.getJahreszeugnisNote() > 0) {
                 anzahl++;
-                notensumme += fach.getJahreszeugnisNote();
+                notensumme += fach.getJahreszeugnisNoteOderSchnittGesamt();
             }
         }
 

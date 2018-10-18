@@ -150,4 +150,16 @@ public class IPFach implements Comparable<IPFach> {
 	    return noteFach.compareTo(note); // Größere Noten zuerst
 
     }
+
+	public double getJahreszeugnisNoteOderSchnittGesamt() {
+		if(jZ != null){
+
+			return (int)jZ.getValue();
+
+		} else {
+
+			return getsG().getValue();
+
+		}
+	}
 }
